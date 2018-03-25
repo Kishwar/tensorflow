@@ -2,5 +2,5 @@
 
 This repo contains my tensorflow codes
 
-1. mnist - python mnist_main.py
+1. mnist training - python mnist_train.py
   - required training and test/validation data is automatically downloaded by code.
