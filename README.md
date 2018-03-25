@@ -2,4 +2,4 @@
 
 This repo contains my tensorflow codes
 
-1. mnist - run main
+1. mnist - python mnist_main.py
