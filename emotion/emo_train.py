@@ -90,7 +90,7 @@ def main(argv=None):
                                 input_labels: valid_labels, p_keep_conv: 0.8})
                 print "%s Validation Loss: %f" % (datetime.now(), valid_loss)
 
-                saver.save(sess, FLAGS.logs_dir + 'model.ckpt', global_step=step+int(idxckp)+1)
+                saver.save(sess, FLAGS.logs_dir + 'model.ckpt', global_step=step+int(idxckp)+100)
 
 if __name__ == "__main__":
     tf.app.run()

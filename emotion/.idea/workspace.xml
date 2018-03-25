@@ -24,8 +24,8 @@
       <file leaf-file-name="emo_train.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/emo_train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6910755">
-              <caret line="92" column="94" selection-start-line="92" selection-start-column="94" selection-end-line="92" selection-end-column="94" />
+            <state vertical-scroll-proportion="0.79405034">
+              <caret line="95" column="16" selection-start-line="95" selection-start-column="16" selection-end-line="95" selection-end-column="16" />
               <folding>
                 <element signature="e#346#369#0" expanded="true" />
               </folding>
@@ -401,8 +401,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/emo_train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6910755">
-          <caret line="92" column="94" selection-start-line="92" selection-start-column="94" selection-end-line="92" selection-end-column="94" />
+        <state vertical-scroll-proportion="0.79405034">
+          <caret line="95" column="16" selection-start-line="95" selection-start-column="16" selection-end-line="95" selection-end-column="16" />
           <folding>
             <element signature="e#346#369#0" expanded="true" />
           </folding>
