@@ -57,13 +57,17 @@ def main(argv=None):
     loss_val = loss(emo_model, input_labels)
     train_op = train(loss_val, global_step)
 
+    idxckp = 0
+
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         saver = tf.train.Saver()
 
         ckpt = tf.train.get_checkpoint_state(FLAGS.logs_dir)
         if ckpt and ckpt.model_checkpoint_path:
+            global idxckp
             saver.restore(sess, ckpt.model_checkpoint_path)
+            idxckp = tf.train.latest_checkpoint(FLAGS.logs_dir)[-1]
             print "Model Restored!"
 
         for step in xrange(MAX_ITERATIONS):
@@ -86,7 +90,7 @@ def main(argv=None):
                                 input_labels: valid_labels, p_keep_conv: 0.8})
                 print "%s Validation Loss: %f" % (datetime.now(), valid_loss)
 
-                saver.save(sess, FLAGS.logs_dir + 'model.ckpt', global_step=step)
+                saver.save(sess, FLAGS.logs_dir + 'model.ckpt', global_step=step+int(idxckp)+1)
 
 if __name__ == "__main__":
     tf.app.run()
