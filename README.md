@@ -1,4 +1,4 @@
-# tensorflow
+# tensorflow (Python 2.7)
 
 This repo contains my tensorflow codes
 
