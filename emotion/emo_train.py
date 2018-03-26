@@ -68,7 +68,7 @@ def main(argv=None):
             global idxckp
             saver.restore(sess, ckpt.model_checkpoint_path)
             idxckp = tf.train.latest_checkpoint(FLAGS.logs_dir)[-1]
-            print "Model Restored!"
+            print "Model restored! ckpt:" + str(tf.train.latest_checkpoint('./logs/')[-1])
 
         for step in xrange(MAX_ITERATIONS):
             batch_image, batch_label = get_next_batch(train_images,\
@@ -90,7 +90,7 @@ def main(argv=None):
                                 input_labels: valid_labels, p_keep_conv: 0.8})
                 print "%s Validation Loss: %f" % (datetime.now(), valid_loss)
 
-                saver.save(sess, FLAGS.logs_dir + 'model.ckpt', global_step=step+int(idxckp)+100)
+                saver.save(sess, FLAGS.logs_dir + 'model.ckpt', global_step=0)
 
 if __name__ == "__main__":
     tf.app.run()
