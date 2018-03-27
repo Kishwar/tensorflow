@@ -15,6 +15,7 @@ import numpy as np
 import cv2
 from constants import *
 from model import *
+import os
 
 # globals
 FLAGS = tf.flags.FLAGS
@@ -56,7 +57,7 @@ def main(argv=None):
             print "Model loaded! ckpt:" + str(tf.train.latest_checkpoint('./logs/'))
 
              # load image
-            image = cv2.imread('./HappyFace.jpg')
+            image = cv2.imread('./Face.jpg')
 
             # convert to gray scale
             gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -66,7 +67,9 @@ def main(argv=None):
 
             # let's predict
             predict_op = tf.argmax(emo_model, 1)
-            print(emotion[predict_op.eval(feed_dict={input_dataset: [input_img], p_keep_conv: 0.8}, session=sess)[0]])
+            face = emotion[predict_op.eval(feed_dict={input_dataset: [input_img], p_keep_conv: 0.8}, session=sess)[0]]
+
+            os.system('say ' + 'It is a ' + str(face) + 'face!')
 
         else:
             exit()

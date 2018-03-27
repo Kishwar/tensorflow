@@ -7,12 +7,10 @@
 #
 
 __author__ = 'kishwarkumar'
-__date__ = '25.03.18' '20:44'
+__date__ = '27.03.18' '17:52'
 
-IMAGE_SIZE = 48
-NUM_LABELS = 7
-LEARNING_RATE = 1e-3
-REGULARIZATION = 1e-2
-MAX_ITERATIONS = 1000000
-BATCH_SIZE = 128
-VALIDATION_PERCENT = 0.1  # use 10 percent of training images for validation
+# imports
+import tensorflow as tf
+
+if __name__ == "__main__":
+    

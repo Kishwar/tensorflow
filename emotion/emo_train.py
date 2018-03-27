@@ -78,19 +78,19 @@ def main(argv=None):
                          input_labels: batch_label, p_keep_conv: 0.8})
 
 
-            if step % 10 == 0:
+            if step % 100 == 0:
                 train_loss = sess.run(loss_val,\
                                 feed_dict = {input_dataset: batch_image, \
                                 input_labels: batch_label, p_keep_conv: 0.8})
                 print "Training Loss: %f" % train_loss
 
-            if step % 100 == 0:
+            if step % 1000 == 0:
                 valid_loss = sess.run(loss_val, \
                                 feed_dict = {input_dataset: valid_images,\
                                 input_labels: valid_labels, p_keep_conv: 0.8})
                 print "%s Validation Loss: %f" % (datetime.now(), valid_loss)
 
-                saver.save(sess, FLAGS.logs_dir + 'model.ckpt', global_step=0)
+                saver.save(sess, FLAGS.logs_dir + 'model.ckpt', global_step=step)
 
 if __name__ == "__main__":
     tf.app.run()
