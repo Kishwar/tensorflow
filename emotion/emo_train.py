@@ -20,6 +20,7 @@ from model import *
 FLAGS = tf.flags.FLAGS
 tf.flags.DEFINE_string("data_dir", "./data/", "Path to data files")
 tf.flags.DEFINE_string("logs_dir", "./logs/", "Path to where log files are to be saved")
+tf.flags.DEFINE_string("model_dir", "./model/", "Path where checkpoint models are saved")
 tf.flags.DEFINE_string("mode", "train", "mode: train (Default)/ test")
 
 def main(argv=None):
@@ -49,6 +50,18 @@ def main(argv=None):
     # get bias objects
     b1, b2, b3, b4, b_o = layer_biases()
 
+    # lets add weights and biases to tensorboard
+    tf.summary.histogram("Summary: w1", w1)
+    tf.summary.histogram("Summary: w1", w2)
+    tf.summary.histogram("Summary: w1", w3)
+    tf.summary.histogram("Summary: w1", w4)
+    tf.summary.histogram("Summary: w1", w_o)
+    tf.summary.histogram("Summary: w1", b1)
+    tf.summary.histogram("Summary: w1", b2)
+    tf.summary.histogram("Summary: w1", b3)
+    tf.summary.histogram("Summary: w1", b4)
+    tf.summary.histogram("Summary: w1", b_o)
+
     emo_model = model(input_dataset, w1, w2, w3, w4, w_o, b1, b2, b3, b4, b_o, p_keep_conv)
 
     # apply softmax on output layer of model
@@ -59,16 +72,17 @@ def main(argv=None):
 
     idxckp = 0
 
+    summary_op = tf.summary.merge_all()
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         saver = tf.train.Saver()
-
-        ckpt = tf.train.get_checkpoint_state(FLAGS.logs_dir)
+        summary_writer = tf.summary.FileWriter(FLAGS.logs_dir, sess.graph_def)
+        ckpt = tf.train.get_checkpoint_state(FLAGS.model_dir)
         if ckpt and ckpt.model_checkpoint_path:
             global idxckp
             saver.restore(sess, ckpt.model_checkpoint_path)
-            idxckp = tf.train.latest_checkpoint(FLAGS.logs_dir)[-1]
-            print "Model restored! ckpt:" + str(tf.train.latest_checkpoint('./logs/')[-1])
+            idxckp = tf.train.latest_checkpoint(FLAGS.model_dir)[-1]
+            print "Model restored! ckpt:" + str(tf.train.latest_checkpoint(FLAGS.model_dir))
 
         for step in xrange(MAX_ITERATIONS):
             batch_image, batch_label = get_next_batch(train_images,\
@@ -79,9 +93,10 @@ def main(argv=None):
 
 
             if step % 100 == 0:
-                train_loss = sess.run(loss_val,\
+                train_loss, summary_str = sess.run([loss_val, summary_op],\
                                 feed_dict = {input_dataset: batch_image, \
                                 input_labels: batch_label, p_keep_conv: 0.8})
+                summary_writer.add_summary(summary_str, global_step=step)
                 print "Training Loss: %f" % train_loss
 
             if step % 1000 == 0:
@@ -90,7 +105,7 @@ def main(argv=None):
                                 input_labels: valid_labels, p_keep_conv: 0.8})
                 print "%s Validation Loss: %f" % (datetime.now(), valid_loss)
 
-                saver.save(sess, FLAGS.logs_dir + 'model.ckpt', global_step=step)
+                saver.save(sess, FLAGS.model_dir + 'model.ckpt', global_step=step)
 
 if __name__ == "__main__":
     tf.app.run()

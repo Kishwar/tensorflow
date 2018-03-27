@@ -24,3 +24,9 @@ mnist/logs/model.ckpt-1.data-00000-of-00001
 *.csv
 
 emotion/logs/checkpoint
+
+emotion/Face.jpg
+
+*.local
+
+emotion/model/checkpoint

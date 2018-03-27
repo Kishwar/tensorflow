@@ -21,6 +21,7 @@ import os
 FLAGS = tf.flags.FLAGS
 tf.flags.DEFINE_string("data_dir", "./data/", "Path to data files")
 tf.flags.DEFINE_string("logs_dir", "./logs/", "Path to where log files are to be saved")
+tf.flags.DEFINE_string("model_dir", "./model/", "Path where checkpoint models are saved")
 tf.flags.DEFINE_string("mode", "train", "mode: train (Default)/ test")
 
 emotion = {0:'anger', 1:'disgust',\
@@ -50,11 +51,11 @@ def main(argv=None):
         sess.run(tf.global_variables_initializer())
 
         saver = tf.train.Saver()
-        ckpt = tf.train.get_checkpoint_state('./logs/')
+        ckpt = tf.train.get_checkpoint_state(FLAGS.model_dir)
 
         if ckpt and ckpt.model_checkpoint_path:
             saver.restore(sess, ckpt.model_checkpoint_path)
-            print "Model loaded! ckpt:" + str(tf.train.latest_checkpoint('./logs/'))
+            print "Model loaded! ckpt:" + str(tf.train.latest_checkpoint(FLAGS.model_dir))
 
              # load image
             image = cv2.imread('./Face.jpg')

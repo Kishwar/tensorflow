@@ -79,7 +79,9 @@ def model(X, w1, w2, w3, w4, w_o, b1, b2, b3, b4, b_o, p_keep_conv):
 
 def loss(pred, label):
     cross_entropy_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=label))
+    tf.summary.scalar('Entropy', cross_entropy_loss)
     reg_losses = tf.add_n(tf.get_collection("losses"))
+    tf.summary.scalar('Reg_loss', reg_losses)
     return cross_entropy_loss + REGULARIZATION * reg_losses
 
 
