@@ -30,3 +30,5 @@ emotion/Face.jpg
 *.local
 
 emotion/model/checkpoint
+
+*.png
