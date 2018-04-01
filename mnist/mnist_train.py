@@ -65,7 +65,7 @@ def run():
         if ckpt and ckpt.model_checkpoint_path:
             global idxckp
             saver.restore(sess, ckpt.model_checkpoint_path)
-            print "Model Restored!"
+            print("Model Restored!")
             idxckp = tf.train.latest_checkpoint('./logs/')[-1]
 
         for i in range(MAX_ITERATIONS):   # 100 iterations
