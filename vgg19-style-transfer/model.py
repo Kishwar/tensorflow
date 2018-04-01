@@ -98,7 +98,8 @@ def load_vgg_model(path):
     b = tf.constant(np.reshape(b, (b.size)))
     L2 = tf.nn.conv2d(L1, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
     L2 = graph['conv1_2']  = tf.nn.relu(L2)
-    L2 = graph['avgpool1'] = tf.nn.avg_pool(L2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    # L2 = graph['avgpool1'] = tf.nn.avg_pool(L2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    L2 = graph['maxpool1'] = tf.nn.max_pool(L2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     W, b = _weights(5, 'conv2_1')
     W = tf.constant(W)
@@ -111,7 +112,8 @@ def load_vgg_model(path):
     b = tf.constant(np.reshape(b, (b.size)))
     L4 = tf.nn.conv2d(L3, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
     L4 = graph['conv2_2']  = tf.nn.relu(L4)
-    L4 = graph['avgpool2'] =  tf.nn.avg_pool(L4, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    # L4 = graph['avgpool2'] =  tf.nn.avg_pool(L4, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    L4 = graph['maxpool2'] =  tf.nn.max_pool(L4, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     W, b = _weights(10, 'conv3_1')
     W = tf.constant(W)
@@ -136,7 +138,8 @@ def load_vgg_model(path):
     b = tf.constant(np.reshape(b, (b.size)))
     L8 = tf.nn.conv2d(L7, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
     L8 = graph['conv3_4']  = tf.nn.relu(L8)
-    L8 = graph['avgpool3'] =  tf.nn.avg_pool(L8, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    # L8 = graph['avgpool3'] =  tf.nn.avg_pool(L8, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    L8 = graph['maxpool3'] =  tf.nn.max_pool(L8, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     W, b = _weights(19, 'conv4_1')
     W = tf.constant(W)
@@ -161,7 +164,8 @@ def load_vgg_model(path):
     b = tf.constant(np.reshape(b, (b.size)))
     L12 = tf.nn.conv2d(L11, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
     L12 = graph['conv4_4']  = tf.nn.relu(L12)
-    L12 = graph['avgpool4'] =  tf.nn.avg_pool(L12, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    # L12 = graph['avgpool4'] =  tf.nn.avg_pool(L12, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    L12 = graph['maxpool4'] =  tf.nn.max_pool(L12, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     W, b = _weights(28, 'conv5_1')
     W = tf.constant(W)
@@ -186,7 +190,8 @@ def load_vgg_model(path):
     b = tf.constant(np.reshape(b, (b.size)))
     L16 = tf.nn.conv2d(L15, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
     L16 = graph['conv5_4']  = tf.nn.relu(L16)
-    L16 = graph['avgpool5'] =  tf.nn.avg_pool(L16, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    # L16 = graph['avgpool5'] =  tf.nn.avg_pool(L16, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    L16 = graph['maxpool5'] =  tf.nn.max_pool(L16, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     # L17 = FC Layer - We don't need it here [FC-4096]
     # L18 = FC Layer - We don't need it here [FC-4096]
