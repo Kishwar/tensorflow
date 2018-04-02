@@ -11,153 +11,152 @@ __date__ = '27.03.18' '22:56'
 
 # imports
 import scipy.io
+import os
 import cv2
 import tensorflow as tf
 from constants import *
+import functools
 
 def load_mat_file(file):
     return scipy.io.loadmat(file)
 
 def resizeImage(image):
-    return cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT))
+    if not (len(image.shape) == 3 and image.shape[2] == 3):
+        image = np.dstack((image,image,image))
+    return cv2.resize(image, (IMAGE_HEIGHT, IMAGE_WIDTH))
+
+def getresizeImage(path):
+    return resizeImage(scipy.misc.imread(path))
+
+def list_files(path):
+    files = []
+    for (dirpath, dirnames, filenames) in os.walk(path):
+        files.extend(filenames)
+        break
+    return files
+
+def get_files(dir):
+    files = list_files(dir)
+    return [os.path.join(dir, x) for x in files]
 
 def gram_matrix(A):
-    return tf.matmul(A, tf.transpose(A))
+    return tf.matmul(tf.transpose(A), A)
 
-def compute_layer_style_cost(a_S, a_G):
-    """
-    Arguments:
-    a_S -- tensor of dimension (1, n_H, n_W, n_C), hidden layer activations representing style of the image S
-    a_G -- tensor of dimension (1, n_H, n_W, n_C), hidden layer activations representing style of the image G
+def compute_layer_style_cost(StyImageModl, XStyle, StylImage):
 
-    Returns:
-    J_style_layer -- tensor representing a scalar value, style cost defined above by equation (2)
-    """
+    J_style_Layer = {}
 
-    # Retrieve dimensions from a_G
-    m, n_H, n_W, n_C = a_G.get_shape().as_list()
+    for layer, coeff in STYLE_LAYERS:
 
-    # Reshape the images to hav ethem of shape (n_C, n_H * n_W)
-    a_S = tf.reshape(tf.transpose(a_S), [n_C, n_H*n_W])
-    a_G = tf.reshape(tf.transpose(a_G), [n_C, n_H*n_W])
+        # lets feed and eval XStyle tensor
+        features = StyImageModl[layer].eval(feed_dict={XStyle:StylImage})
 
-    # Compute gram matrics for both S and G
-    GS = gram_matrix(a_S)
-    GG = gram_matrix(a_G)
+        # reshape features
+        features = np.reshape(features, (-1, features.shape[3]))
 
-    # Compute the loss
-    J_style_layer = (1 / (4 * (n_C**2) * (n_H * n_W)**2)) * (tf.reduce_sum(tf.square(tf.subtract(GS, GG))))
+        # compute gram matrix over it
+        J_style_Layer[layer] = coeff * (gram_matrix(features)  / features.size)
 
-    return J_style_layer
+    return J_style_Layer
+
+def compute_layer_gen_cost(GenImageModl):
+
+    J_gen_Layer = {}
+
+    for layer, coeff in STYLE_LAYERS:
+
+        LGenImgModl = GenImageModl[layer]
+
+        # Retrieve dimensions from a_G
+        m, n_H, n_W, n_C = LGenImgModl.get_shape().as_list()
+
+        features = tf.reshape(LGenImgModl, (m, n_H * n_W, n_C))
+
+        features_T = tf.transpose(features, perm=[0,2,1])
+
+        J_gen_Layer[layer] = tf.matmul(features_T, features)
+
+    return J_gen_Layer
 
 
-def compute_style_cost(model, sess):
-    """
-    Computes the overall style cost from several chosen layers
-
-    Arguments:
-    model -- our tensorflow model
-    STYLE_LAYERS -- A python list containing:
-                        - the names of the layers we would like to extract style from
-                        - a coefficient for each of them
-
-    Returns:
-    J_style -- tensor representing a scalar value, style cost defined above by equation (2)
-    """
+def compute_style_cost(StyImageModl, GenImageModl, XStyle, StylImage, style_weight):
 
     # initialize the overall style cost
-    J_style = 0
+    J_style = []
 
-    for layer_name, coeff in STYLE_LAYERS:
+    style_loss_layer = compute_layer_style_cost(StyImageModl, XStyle, StylImage)
+    gen_loss_layer = compute_layer_gen_cost(GenImageModl)
 
-        # Select the output tensor of the currently selected layer
-        out = model[layer_name]
+    for layer, coeff in STYLE_LAYERS:
 
-        # Set a_S to be the hidden layer activation from the layer we have selected, by running the session on out
-        a_S = sess.run(out)
+        loss_Style = style_loss_layer[layer]
 
-        # Set a_G to be the hidden layer activation from same layer. Here, a_G references model[layer_name]
-        # and isn't evaluated yet. Later in the code, we'll assign the image G as the model input, so that
-        # when we run the session, this will be the activations drawn from the appropriate layer, with G as input.
-        a_G = out
+        loss_Gen = gen_loss_layer[layer]
 
-        # Compute style_cost for the current layer
-        J_style_layer = compute_layer_style_cost(a_S, a_G)
+        print('loss_Style' + str(loss_Style.shape) + ' loss_Gen' + str(loss_Gen.shape))
 
-        # Add coeff * J_style_layer of this layer to overall style cost
-        J_style += coeff * J_style_layer
+        J_style.append(2 * tf.nn.l2_loss(loss_Gen - loss_Style))
+
+    # todo
+    J_style = style_weight * functools.reduce(tf.add, J_style) / 4 # tf.reduce_sum(tf.square(J_style)) * style_weight
 
     return J_style
 
-
-def compute_content_cost(a_C, a_G):
+def compute_content_cost(a_C, a_G, CWt, CCz):
     """
     Computes the content cost
-
-    Arguments:
-    a_C -- tensor of dimension (1, n_H, n_W, n_C), hidden layer activations representing content of the image C
-    a_G -- tensor of dimension (1, n_H, n_W, n_C), hidden layer activations representing content of the image G
-
-    Returns:
-    J_content -- scalar that you compute using equation 1 above.
     """
 
-    # Retrieve dimensions from a_G
-    m, n_H, n_W, n_C = a_G.get_shape().as_list()        # get dimension of generated image (1, n_H, n_W, n_C)
-
-    # Reshape a_C and a_G
-    a_C_unrolled = tf.reshape(tf.transpose(a_C), [n_H * n_W, n_C])
-    a_G_unrolled = tf.reshape(tf.transpose(a_G), [n_H * n_W, n_C])
-
-    # compute the cost
-    J_content = (1 / (4 * n_H * n_W * n_C)) * (tf.reduce_sum(tf.square(tf.subtract(a_C_unrolled, a_G_unrolled))))
+    J_content = CWt * (2 * tf.nn.l2_loss(a_G - a_C) / CCz)
 
     return J_content
 
+def compute_tv_cost(GenImage, tv_weight, batch_shape):
 
-def total_cost(J_content, J_style, alpha = 10, beta = 40):
-    """
-    Computes the total cost function
+    # total variation denoising
+    tv_y_size = tensor_size(GenImage[:,1:,:,:])
+    tv_x_size = tensor_size(GenImage[:,:,1:,:])
+    y_tv = tf.nn.l2_loss(GenImage[:,1:,:,:] - GenImage[:,:batch_shape[1]-1,:,:])
+    x_tv = tf.nn.l2_loss(GenImage[:,:,1:,:] - GenImage[:,:,:batch_shape[2]-1,:])
 
-    Arguments:
-    J_content -- content cost coded above
-    J_style -- style cost coded above
-    alpha -- hyperparameter weighting the importance of the content cost
-    beta -- hyperparameter weighting the importance of the style cost
+    J_tv = tv_weight*2*(x_tv/tv_x_size + y_tv/tv_y_size)
 
-    Returns:
-    J -- total cost as defined by the formula above.
-    """
+    return J_tv
 
-    J = (alpha * J_content) + (beta * J_style)
+
+def total_cost(J_content, J_style, J_tv):
+
+    J = J_content + J_style + J_tv
 
     return J
 
-def reshape_and_normalize_image(image):
+def normalize_image(image):
     """
-    Reshape and normalize the input image (content or style)
+    Normalize the input image (content or style)
     """
-
-    # Reshape image to mach expected input
-    image = np.reshape(image, ((1,) + image.shape))
 
     # Substract the mean to match the expected input
     image = image - MEANS
 
     return image
 
-def generate_noise_image(content_image, noise_ratio = NOISE_RATIO):
+def Denormalize(image):
     """
-    Generates a noisy image by adding random noise to the content_image
+    Denormalize the input image (content or style)
     """
 
-    # Generate a random noise_image
-    noise_image = np.random.uniform(-20, 20, (1, IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS)).astype('float32')
+    # Substract the mean to match the expected input
+    image = image + MEANS
 
-    # Set the input_image to be a weighted average of the content_image and a noise_image
-    input_image = noise_image * noise_ratio + content_image * (1 - noise_ratio)
+    return image
 
-    return input_image
+def generate_noise_image(content_image_shape, noise_ratio = NOISE_RATIO):
+    """
+    Generates a noisy image tensor
+    """
+    noise_image = tf.Variable(tf.random_normal(content_image_shape)) * noise_ratio
+
+    return noise_image
 
 def save_image(path, image):
 
@@ -168,3 +167,9 @@ def save_image(path, image):
     image = np.clip(image[0], 0, 255).astype('uint8')
 
     scipy.misc.imsave(path, image)
+
+# temp
+def tensor_size(tensor):
+    from operator import mul
+    import functools
+    return functools.reduce(mul, (d.value for d in tensor.get_shape()[1:]), 1)

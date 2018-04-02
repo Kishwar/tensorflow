@@ -11,101 +11,102 @@ __date__ = '27.03.18' '17:52'
 
 # imports
 from model import *
+from optimize import *
 import scipy.misc
+from argparse import ArgumentParser
 
-def run():
+def build_parser():
+    parser = ArgumentParser()
+    parser.add_argument('--checkpoint-dir', type=str,
+                        dest='checkpoint_dir', help='dir to save model checkpoints',
+                        metavar='CHECKPOINT_DIR', required=True)
 
-    # Reset the graph
-    tf.reset_default_graph()
+    parser.add_argument('--style', type=str,
+                        dest='style', help='path to the style image',
+                        metavar='STYLE_IMAGE', required=True)
 
-    # Start interactive session
-    sess = tf.InteractiveSession()
+    parser.add_argument('--train-path', type=str,
+                        dest='train_path', help='path to training images folder',
+                        metavar='TRAIN_PATH', default=TRAIN_PATH)
 
-    print('loading model ...')
-    model = load_vgg_model('./pre_trained_model/imagenet-vgg-verydeep-19.mat')
-    print('model loaded ...')
+    parser.add_argument('--test', type=str,
+                        dest='test', help='test image path',
+                        metavar='TEST', default=False)
 
-    # print model as dicc elements
-    print(model)
+    parser.add_argument('--test-dir', type=str,
+                        dest='test_dir', help='test image save dir',
+                        metavar='TEST_DIR', default=False)
 
-    ContentImage = scipy.misc.imread('./images/ContentImage.jpg')
-    ContentImage = resizeImage(ContentImage)
-    print('Content Image Shape = ' + str(ContentImage.shape))
+    parser.add_argument('--slow', dest='slow', action='store_true',
+                        help='gatys\' approach (for debugging, not supported)',
+                        default=False)
 
-    StyleImage = scipy.misc.imread('./images/StyleImage.jpg')
-    StyleImage = resizeImage(StyleImage)
-    print('Style Image Shape = ' + str(StyleImage.shape))
+    parser.add_argument('--epochs', type=int,
+                        dest='epochs', help='num epochs',
+                        metavar='EPOCHS', default=NUM_EPOCHS)
 
-    ContentImage = reshape_and_normalize_image(ContentImage)
-    print('Content Image Shape = ' + str(ContentImage.shape))
+    parser.add_argument('--batch-size', type=int,
+                        dest='batch_size', help='batch size',
+                        metavar='BATCH_SIZE', default=BATCH_SIZE)
 
-    StyleImage = reshape_and_normalize_image(StyleImage)
-    print('Style Image Shape = ' + str(StyleImage.shape))
+    parser.add_argument('--checkpoint-iterations', type=int,
+                        dest='checkpoint_iterations', help='checkpoint frequency',
+                        metavar='CHECKPOINT_ITERATIONS', default=CHECKPOINT_ITERATIONS)
 
-    generated_image = generate_noise_image(ContentImage)
+    parser.add_argument('--vgg-path', type=str,
+                        dest='vgg_path',
+                        help='path to VGG19 network (default %(default)s)',
+                        metavar='VGG_PATH', default=VGG_PATH)
 
-    # Assign the content image to be the input of the VGG model.
-    sess.run(model['input'].assign(ContentImage))
+    parser.add_argument('--content-weight', type=float,
+                        dest='content_weight',
+                        help='content weight (default %(default)s)',
+                        metavar='CONTENT_WEIGHT', default=CONTENT_WEIGHT)
 
-    # Select the output tensor of layer conv4_2
-    out = model['conv4_2']
+    parser.add_argument('--style-weight', type=float,
+                        dest='style_weight',
+                        help='style weight (default %(default)s)',
+                        metavar='STYLE_WEIGHT', default=STYLE_WEIGHT)
 
-    # Set a_C to be the hidden layer activation from the layer we have selected
-    a_C = sess.run(out)
+    parser.add_argument('--tv-weight', type=float,
+                        dest='tv_weight',
+                        help='total variation regularization weight (default %(default)s)',
+                        metavar='TV_WEIGHT', default=TV_WEIGHT)
 
-    # Set a_G to be the hidden layer activation from same layer. Here, a_G references model['conv4_2']
-    # and isn't evaluated yet. Later in the code, we'll assign the image G as the model input, so that
-    # when we run the session, this will be the activations drawn from the appropriate layer, with G as input.
-    a_G = out
-
-    # Compute the content cost
-    J_content = compute_content_cost(a_C, a_G)
-
-
-    # Assign the input of the model to be the "style" image
-    sess.run(model['input'].assign(StyleImage))
-
-    # Compute the style cost
-    J_style = compute_style_cost(model, sess)
-
-    # Compute total cost --> We need to optimise this cost
-    J = total_cost(J_content, J_style, alpha = 10, beta = 40)
-
-    # define optimizer
-    optimizer = tf.train.AdamOptimizer(LEARNING_RATE)
-
-    # define train_step
-    train_step = optimizer.minimize(J)
-
-    # Initialize global variables
-    sess.run(tf.global_variables_initializer())
-
-    # Run the noisy input image (initial generated image) through the model.
-    sess.run(model['input'].assign(generated_image))
-
-    for i in range(NUM_OF_ITERATIONS):
-
-        # Run the session on the train_step to minimize the total cost
-        _ = sess.run(train_step)
-
-        # Compute the generated image by running the session on the current model['input']
-        generated_image = sess.run(model['input'])
-
-        # Print every 20 iteration.
-        if(i%20 == 0):
-
-            Jt, Jc, Js = sess.run([J, J_content, J_style])
-            print("Iteration " + str(i) + " :")
-            print("total cost = " + str(Jt))
-            print("content cost = " + str(Jc))
-            print("style cost = " + str(Js))
-
-            # save current generated image in the "/output" directory
-            save_image("./output/" + str(i) + ".png", generated_image)
-
-    # save last generated image
-    save_image('output/generated_image.jpg', generated_image)
-
+    parser.add_argument('--learning-rate', type=float,
+                        dest='learning_rate',
+                        help='learning rate (default %(default)s)',
+                        metavar='LEARNING_RATE', default=LEARNING_RATE)
+    return parser
 
 if __name__ == "__main__":
-    run()
+    parser = build_parser()
+    Args = parser.parse_args()
+
+    # lets get the style image
+    StyleImage = getresizeImage(Args.style)
+
+    # lets get content images
+    ContentImages = get_files(Args.train_path)
+    print('Total number of Content Images = ' + str(len(ContentImages)))
+
+    # mandatory arguments
+    args = [
+        ContentImages,
+        StyleImage,
+        Args.content_weight,
+        Args.style_weight,
+        Args.tv_weight,
+        Args.vgg_path
+    ]
+
+    # optional arguments (arguments have already default values)
+    kwargs = {
+        "epochs": Args.epochs,
+        "print_iterations": Args.checkpoint_iterations,
+        "batch_size": Args.batch_size,
+        "save_path": os.path.join(Args.checkpoint_dir,'fns.ckpt'),
+        "learning_rate": Args.learning_rate
+    }
+
+    optimize(*args, **kwargs)

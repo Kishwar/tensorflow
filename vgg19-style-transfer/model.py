@@ -15,7 +15,7 @@ from constants import *
 import tensorflow as tf
 import numpy as np
 
-def load_vgg_model(path):
+def vgg19(path, Image):
     """
     Returns a model for the purpose of 'painting' the picture.
     Takes only the convolution layer weights and wrap using the TensorFlow
@@ -75,120 +75,119 @@ def load_vgg_model(path):
         """
         Return the weights and bias from the VGG model for a given layer.
         """
-        wb = vgg_layers[0][layer][0][0][2]
-        W = wb[0][0]
-        b = wb[0][1]
-        layer_name = vgg_layers[0][layer][0][0][0][0]
-        assert layer_name == expected_layer_name
+        W, b = vgg_layers[0][layer][0][0][0][0]
+        W = np.transpose(W, (1, 0, 2, 3))
+        b = b.reshape(-1)
         return W, b
 
     # Constructs the graph model.
     graph = {}
 
-    X = graph['input'] = tf.Variable(np.zeros((1, IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS)), dtype = 'float32')
+    # X = graph['input'] = tf.Variable(np.zeros((1, IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS)), dtype = 'float32')
+    X = graph['input'] = Image
 
     W, b = _weights(0, 'conv1_1')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L1 = tf.nn.conv2d(X, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L1 = tf.nn.conv2d(X, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L1 = tf.nn.bias_add(L1, b)
     L1 = graph['conv1_1']  = tf.nn.relu(L1)
 
     W, b = _weights(2, 'conv1_2')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L2 = tf.nn.conv2d(L1, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L2 = tf.nn.conv2d(L1, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L2 = tf.nn.bias_add(L2, b)
     L2 = graph['conv1_2']  = tf.nn.relu(L2)
     # L2 = graph['avgpool1'] = tf.nn.avg_pool(L2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
     L2 = graph['maxpool1'] = tf.nn.max_pool(L2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     W, b = _weights(5, 'conv2_1')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L3 = tf.nn.conv2d(L2, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L3 = tf.nn.conv2d(L2, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L3 = tf.nn.bias_add(L3, b)
     L3 = graph['conv2_1']  = tf.nn.relu(L3)
 
     W, b = _weights(7, 'conv2_2')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L4 = tf.nn.conv2d(L3, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L4 = tf.nn.conv2d(L3, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L4 = tf.nn.bias_add(L4, b)
     L4 = graph['conv2_2']  = tf.nn.relu(L4)
     # L4 = graph['avgpool2'] =  tf.nn.avg_pool(L4, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
     L4 = graph['maxpool2'] =  tf.nn.max_pool(L4, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     W, b = _weights(10, 'conv3_1')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L5 = tf.nn.conv2d(L4, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L5 = tf.nn.conv2d(L4, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L5 = tf.nn.bias_add(L5, b)
     L5 = graph['conv3_1']  = tf.nn.relu(L5)
 
     W, b = _weights(12, 'conv3_2')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L6 = tf.nn.conv2d(L5, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L6 = tf.nn.conv2d(L5, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L6 = tf.nn.bias_add(L6, b)
     L6 = graph['conv3_2']  = tf.nn.relu(L6)
 
     W, b = _weights(14, 'conv3_3')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L7 = tf.nn.conv2d(L6, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L7 = tf.nn.conv2d(L6, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L7 = tf.nn.bias_add(L7, b)
     L7 = graph['conv3_2']  = tf.nn.relu(L7)
 
     W, b = _weights(16, 'conv3_4')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L8 = tf.nn.conv2d(L7, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L8 = tf.nn.conv2d(L7, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L8 = tf.nn.bias_add(L8, b)
     L8 = graph['conv3_4']  = tf.nn.relu(L8)
     # L8 = graph['avgpool3'] =  tf.nn.avg_pool(L8, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
     L8 = graph['maxpool3'] =  tf.nn.max_pool(L8, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     W, b = _weights(19, 'conv4_1')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L9 = tf.nn.conv2d(L8, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L9 = tf.nn.conv2d(L8, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L9 = tf.nn.bias_add(L9, b)
     L9 = graph['conv4_1']  = tf.nn.relu(L9)
 
     W, b = _weights(21, 'conv4_2')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L10 = tf.nn.conv2d(L9, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L10 = tf.nn.conv2d(L9, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L10 = tf.nn.bias_add(L10, b)
     L10 = graph['conv4_2']  = tf.nn.relu(L10)
 
     W, b = _weights(23, 'conv4_3')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L11 = tf.nn.conv2d(L10, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L11 = tf.nn.conv2d(L10, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L11 = tf.nn.bias_add(L11, b)
     L11 = graph['conv4_3']  = tf.nn.relu(L11)
 
     W, b = _weights(25, 'conv4_4')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L12 = tf.nn.conv2d(L11, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L12 = tf.nn.conv2d(L11, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L12 = tf.nn.bias_add(L12, b)
     L12 = graph['conv4_4']  = tf.nn.relu(L12)
     # L12 = graph['avgpool4'] =  tf.nn.avg_pool(L12, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
     L12 = graph['maxpool4'] =  tf.nn.max_pool(L12, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     W, b = _weights(28, 'conv5_1')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L13 = tf.nn.conv2d(L12, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L13 = tf.nn.conv2d(L12, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L13 = tf.nn.bias_add(L13, b)
     L13 = graph['conv5_1']  = tf.nn.relu(L13)
 
     W, b = _weights(30, 'conv5_2')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L14 = tf.nn.conv2d(L13, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L14 = tf.nn.conv2d(L13, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L14 = tf.nn.bias_add(L14, b)
     L14 = graph['conv5_2']  = tf.nn.relu(L14)
 
     W, b = _weights(32, 'conv5_3')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L15 = tf.nn.conv2d(L14, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L15 = tf.nn.conv2d(L14, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L15 = tf.nn.bias_add(L15, b)
     L15 = graph['conv5_3']  = tf.nn.relu(L15)
 
     W, b = _weights(34, 'conv5_4')
     W = tf.constant(W)
-    b = tf.constant(np.reshape(b, (b.size)))
-    L16 = tf.nn.conv2d(L15, filter=W, strides=[1, 1, 1, 1], padding='SAME') + b
+    L16 = tf.nn.conv2d(L15, filter=W, strides=[1, 1, 1, 1], padding='SAME')
+    L16 = tf.nn.bias_add(L16, b)
     L16 = graph['conv5_4']  = tf.nn.relu(L16)
     # L16 = graph['avgpool5'] =  tf.nn.avg_pool(L16, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
     L16 = graph['maxpool5'] =  tf.nn.max_pool(L16, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
