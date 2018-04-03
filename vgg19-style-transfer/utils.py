@@ -35,12 +35,9 @@ def list_files(path):
         break
     return files
 
-def get_files(dir):
-    files = list_files(dir)
-    return [os.path.join(dir, x) for x in files]
-
 def gram_matrix(A):
-    return tf.matmul(tf.transpose(A), A)
+    # return tf.matmul(tf.transpose(A), A)
+    return np.matmul(np.transpose(A), A)
 
 def compute_layer_style_cost(StyImageModl, XStyle, StylImage):
 
@@ -93,12 +90,9 @@ def compute_style_cost(StyImageModl, GenImageModl, XStyle, StylImage, style_weig
 
         loss_Gen = gen_loss_layer[layer]
 
-        print('loss_Style' + str(loss_Style.shape) + ' loss_Gen' + str(loss_Gen.shape))
+        J_style.append(2 * tf.nn.l2_loss(loss_Gen - loss_Style) / loss_Style.size)
 
-        J_style.append(2 * tf.nn.l2_loss(loss_Gen - loss_Style))
-
-    # todo
-    J_style = style_weight * functools.reduce(tf.add, J_style) / 4 # tf.reduce_sum(tf.square(J_style)) * style_weight
+    J_style = style_weight * functools.reduce(tf.add, J_style)
 
     return J_style
 
@@ -119,7 +113,7 @@ def compute_tv_cost(GenImage, tv_weight, batch_shape):
     y_tv = tf.nn.l2_loss(GenImage[:,1:,:,:] - GenImage[:,:batch_shape[1]-1,:,:])
     x_tv = tf.nn.l2_loss(GenImage[:,:,1:,:] - GenImage[:,:,:batch_shape[2]-1,:])
 
-    J_tv = tv_weight*2*(x_tv/tv_x_size + y_tv/tv_y_size)
+    J_tv = tv_weight * 2 * (x_tv / tv_x_size + y_tv / tv_y_size)
 
     return J_tv
 

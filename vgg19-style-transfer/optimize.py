@@ -14,9 +14,9 @@ from utils import *
 from model import *
 import time
 
-def optimize(ContentImages, StyleImage, content_weight, style_weight,
-             tv_weight, vgg_path, epochs=2, print_iterations=2,
-             batch_size=4, save_path='saver/fns.ckpt', learning_rate=1e-3):
+def optimize(ContentImage, StyleImage, OutImage, content_weight, style_weight,
+             tv_weight, vgg_path, epochs=4, print_iterations=4,
+             learning_rate=1e-3):
 
     # Reset the graph
     tf.reset_default_graph()
@@ -24,15 +24,8 @@ def optimize(ContentImages, StyleImage, content_weight, style_weight,
     # Start interactive session
     sess = tf.InteractiveSession()
 
-    mod = len(ContentImages) % batch_size
-    if mod > 0:
-        print('Train set has been trimmed slightly..')
-        ContentImages = ContentImages[:-mod]
-        print('New total number of Content Images = ' + str(len(ContentImages)))
-
-    # update batch shape
-    batch_shape = (batch_size, IMAGE_WIDTH, IMAGE_HEIGHT, COLOR_CHANNELS)
-    print('batch shape =' + str(batch_shape))
+    # Create shape of (1, IW, IH, IC)
+    img_shape = (1, IMAGE_WIDTH, IMAGE_HEIGHT, COLOR_CHANNELS)
 
     # --------------------------------
     #   PRECOMPUTE CONTENT FEATURES  #
@@ -41,7 +34,7 @@ def optimize(ContentImages, StyleImage, content_weight, style_weight,
     content_features = {}
 
     # lets have the tensor for Content Image(s)
-    XContent = tf.placeholder(tf.float32, shape=batch_shape, name="XContent")
+    XContent = tf.placeholder(tf.float32, shape=img_shape, name="XContent")
 
     # lets normalize by subtracting mean
     TContentImages = normalize_image(XContent)
@@ -57,7 +50,7 @@ def optimize(ContentImages, StyleImage, content_weight, style_weight,
 
     GenImageModl = vgg19(vgg_path, GenImage)
 
-    content_size = tensor_size(content_features[CONTENT_LAYER]) * batch_size
+    content_size = tensor_size(content_features[CONTENT_LAYER])
     assert tensor_size(content_features[CONTENT_LAYER]) == tensor_size(GenImageModl[CONTENT_LAYER])
 
     # ---------------------------------------------------
@@ -83,13 +76,13 @@ def optimize(ContentImages, StyleImage, content_weight, style_weight,
     NStyleImage = np.array([StyleImage])
     J_style = compute_style_cost(StyImageModl, GenImageModl, XStyle, NStyleImage, style_weight)
 
-    J_tv = compute_tv_cost(GenImage, tv_weight, batch_shape)
+    J_tv = compute_tv_cost(GenImage, tv_weight, img_shape)
 
     # Total cost - we need to minimize this
     J = total_cost(J_content, J_style, J_tv)
 
     # define optimizer
-    optimizer = tf.train.AdamOptimizer(LEARNING_RATE)
+    optimizer = tf.train.AdamOptimizer(learning_rate)
 
     # define train_step
     train_step = optimizer.minimize(J)
@@ -97,47 +90,40 @@ def optimize(ContentImages, StyleImage, content_weight, style_weight,
     # Initialize global variables
     sess.run(tf.global_variables_initializer())
 
+    delta_time = 0
+
     for epoch in range(epochs):
-        num_examples = len(ContentImages)
-        iterations = 0
-        while iterations * batch_size < num_examples:
+
+        start_time = time.time()
+
+        X_IContent = np.zeros(img_shape, dtype=np.float32)
+        X_IContent[0] = getresizeImage(ContentImage[0]).astype(np.float32)
+
+        assert X_IContent.shape == img_shape
+
+        train_step.run(feed_dict={XContent:X_IContent})
+
+        end_time = time.time()
+
+        delta_time += (end_time - start_time)
+
+        if ((epoch % print_iterations == 0) or ((epoch == epochs - 1) and (epochs > 2))):
+
             start_time = time.time()
 
-            curr = iterations * batch_size
-            step = curr + batch_size
-            X_batch = np.zeros(batch_shape, dtype=np.float32)
+            out = sess.run([J_style, J_content, J_tv, J, GenImage], feed_dict = {XContent:X_IContent})
 
-            for j, bImg in enumerate(ContentImages[curr:step]):
-                X_batch[j] = getresizeImage(bImg).astype(np.float32)
+            oJ_style, oJ_content, oJ_tv, oJ, oGenImage = out
 
-            iterations += 1
-            assert X_batch.shape[0] == batch_size
-
-            train_step.run(feed_dict={XContent:X_batch})
+            # save this iteration / epoch image
+            save_image(OutImage + '/out_' + str(epoch) + '.jpg', oGenImage)
 
             end_time = time.time()
 
-            delta_time = end_time - start_time
+            delta_time += (end_time - start_time)
 
-            # print("delta_time: %s, iteration: %s, print_iterations %s" % (delta_time, iterations, print_iterations))
+            print('Processing time %s for %s Epoch(s).' %(delta_time, print_iterations))
 
-            is_last = epoch == epochs - 1 and iterations * batch_size >= num_examples
+            print('Iteration: %d, J: %s, J_style: %s, J_content: %s, J_tv: %s' % (epoch, oJ, oJ_style, oJ_content, oJ_tv))
 
-            if ((iterations % print_iterations == 0) or is_last):
-
-                out = sess.run([J_style, J_content, J_tv, J, GenImage], feed_dict = {XContent:X_batch})
-
-                oJ_style, oJ_content, oJ_tv, oJ, oGenImage = out
-
-                # save model
-                saver = tf.train.Saver()
-                res = saver.save(sess, save_path)
-
-                # lets put losses/costs together
-                J_All = (oJ_style, oJ_content, oJ_tv, oJ)
-
-                oGenImage = Denormalize(oGenImage)
-
-                print('Epoch %d, Iteration: %d, J: %s, J_style: %s, J_content: %s, J_tv: %s' % (epoch, iterations, oJ, oJ_style, oJ_content, oJ_tv))
-
-                # yield(oGenImage, J_All, iterations, epoch)
+            delta_time = 0

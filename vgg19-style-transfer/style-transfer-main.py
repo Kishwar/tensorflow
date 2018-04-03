@@ -17,41 +17,25 @@ from argparse import ArgumentParser
 
 def build_parser():
     parser = ArgumentParser()
-    parser.add_argument('--checkpoint-dir', type=str,
-                        dest='checkpoint_dir', help='dir to save model checkpoints',
-                        metavar='CHECKPOINT_DIR', required=True)
-
     parser.add_argument('--style', type=str,
                         dest='style', help='path to the style image',
                         metavar='STYLE_IMAGE', required=True)
 
-    parser.add_argument('--train-path', type=str,
-                        dest='train_path', help='path to training images folder',
-                        metavar='TRAIN_PATH', default=TRAIN_PATH)
+    parser.add_argument('--content', type=str,
+                        dest='train_path', help='path to the content image',
+                        metavar='CONTENT / TRAIN_PATH', required=True)
 
-    parser.add_argument('--test', type=str,
-                        dest='test', help='test image path',
-                        metavar='TEST', default=False)
+    parser.add_argument('--out', type=str,
+                        dest='out_path', help='path to the output directory',
+                        metavar='OUTDIR', required=True)
 
-    parser.add_argument('--test-dir', type=str,
-                        dest='test_dir', help='test image save dir',
-                        metavar='TEST_DIR', default=False)
-
-    parser.add_argument('--slow', dest='slow', action='store_true',
-                        help='gatys\' approach (for debugging, not supported)',
-                        default=False)
+    parser.add_argument('--print-iterations', type=int,
+                        dest='print_iterations', help='print on terminal after these number of iterations',
+                        metavar='CHECKPOINT_ITERATIONS', default=PRINT_ITERATIONS)
 
     parser.add_argument('--epochs', type=int,
                         dest='epochs', help='num epochs',
                         metavar='EPOCHS', default=NUM_EPOCHS)
-
-    parser.add_argument('--batch-size', type=int,
-                        dest='batch_size', help='batch size',
-                        metavar='BATCH_SIZE', default=BATCH_SIZE)
-
-    parser.add_argument('--checkpoint-iterations', type=int,
-                        dest='checkpoint_iterations', help='checkpoint frequency',
-                        metavar='CHECKPOINT_ITERATIONS', default=CHECKPOINT_ITERATIONS)
 
     parser.add_argument('--vgg-path', type=str,
                         dest='vgg_path',
@@ -84,28 +68,28 @@ if __name__ == "__main__":
     Args = parser.parse_args()
 
     # lets get the style image
-    StyleImage = getresizeImage(Args.style)
+    StyleImage = getresizeImage(Args.style)    # np array
+    print('Style Image   - ' + str(Args.style))
 
     # lets get content images
-    ContentImages = get_files(Args.train_path)
-    print('Total number of Content Images = ' + str(len(ContentImages)))
+    ContentImage = [Args.train_path]           # path
+    print('Content Image - ' + str(Args.train_path))
 
-    # mandatory arguments
+    # args
     args = [
-        ContentImages,
+        ContentImage,
         StyleImage,
+        Args.out_path,
         Args.content_weight,
         Args.style_weight,
         Args.tv_weight,
         Args.vgg_path
     ]
 
-    # optional arguments (arguments have already default values)
+    # kwargs
     kwargs = {
         "epochs": Args.epochs,
-        "print_iterations": Args.checkpoint_iterations,
-        "batch_size": Args.batch_size,
-        "save_path": os.path.join(Args.checkpoint_dir,'fns.ckpt'),
+        "print_iterations": Args.print_iterations,
         "learning_rate": Args.learning_rate
     }
 
