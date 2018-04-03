@@ -15,6 +15,7 @@ This repo contains my tensorflow codes
   Image input as arg (not yet implemented, arg for input image, change in code for now)
   
 ## VGG19-STYLE-TRANSFER (Python 3.5, Tensorflow LATEST)
+   - Download model weights from http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat <br />
    - VGG19 STYLE TRANSFER can be executed by - <br />
 ```
 python style-transfer-main.py  --style ./imgstyle/StyleImage.jpg --content ./imgcontent/ContentImage.jpg --out ./output/ --epochs 100000 --print-iterations 100 --learning-rate 0.01 
