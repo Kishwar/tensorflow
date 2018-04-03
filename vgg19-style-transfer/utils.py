@@ -71,7 +71,7 @@ def compute_layer_gen_cost(GenImageModl):
 
         features_T = tf.transpose(features, perm=[0,2,1])
 
-        J_gen_Layer[layer] = tf.matmul(features_T, features)
+        J_gen_Layer[layer] = tf.matmul(features_T, features) / (n_H * n_W * n_C)
 
     return J_gen_Layer
 
@@ -148,7 +148,7 @@ def generate_noise_image(content_image_shape, noise_ratio = NOISE_RATIO):
     """
     Generates a noisy image tensor
     """
-    noise_image = tf.Variable(tf.random_normal(content_image_shape)) * noise_ratio
+    noise_image = tf.Variable(tf.random_normal(content_image_shape) * noise_ratio)
 
     return noise_image
 
