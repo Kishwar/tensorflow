@@ -14,7 +14,7 @@ This repo contains my tensorflow codes
       * https://inclass.kaggle.com/c/facial-keypoints-detector/data --> ./data/
   Image input as arg (not yet implemented, arg for input image, change in code for now)
   
-## VGG19-STYLE-TRANSFER (Python 3.5, Tensorflow LATEST)
+## VGG19-STYLE-TRANSFER FOR IMAGE (Python 3.5, Tensorflow LATEST)
    - Download model weights from http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat <br />
    - VGG19 STYLE TRANSFER can be executed by - <br />
 ```
