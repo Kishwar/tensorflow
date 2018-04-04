@@ -24,8 +24,8 @@ def optimize(ContentImage, StyleImage, OutImage, content_weight, style_weight,
     # Start interactive session
     sess = tf.InteractiveSession()
 
-    # Create shape of (1, IW, IH, IC)
-    img_shape = (1, IMAGE_WIDTH, IMAGE_HEIGHT, COLOR_CHANNELS)
+    # Create shape of (1, IH, IW, IC)
+    img_shape = (1, IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS)
 
     # --------------------------------
     #   PRECOMPUTE CONTENT FEATURES  #
@@ -46,7 +46,7 @@ def optimize(ContentImage, StyleImage, OutImage, content_weight, style_weight,
     # ---------------------------------
     #            NOISE IMAGE          #
     # ---------------------------------
-    GenImage = generate_noise_image(XContent.get_shape())
+    GenImage = generate_noise_image((1,) + getresizeImage(ContentImage[0]))
 
     GenImageModl = vgg19(vgg_path, GenImage)
 

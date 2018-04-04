@@ -12,7 +12,6 @@ __date__ = '27.03.18' '22:56'
 # imports
 import scipy.io
 import os
-import cv2
 import tensorflow as tf
 from constants import *
 import functools
@@ -23,7 +22,7 @@ def load_mat_file(file):
 def resizeImage(image):
     if not (len(image.shape) == 3 and image.shape[2] == 3):
         image = np.dstack((image,image,image))
-    return cv2.resize(image, (IMAGE_HEIGHT, IMAGE_WIDTH))
+    return np.resize(image, (IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS)).astype('float32')
 
 def getresizeImage(path):
     return resizeImage(scipy.misc.imread(path))
@@ -144,13 +143,18 @@ def Denormalize(image):
 
     return image
 
-def generate_noise_image(content_image_shape, noise_ratio = NOISE_RATIO):
+def generate_noise_image(content_image, noise_ratio = NOISE_RATIO):
     """
-    Generates a noisy image tensor
+    Generates a noisy image by adding random noise to the content_image
     """
-    noise_image = tf.Variable(tf.random_normal(content_image_shape) * noise_ratio)
 
-    return noise_image
+    # Generate a random noise_image
+    noise_image = np.random.uniform(-20, 20, (1, IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS)).astype('float32')
+
+    # Set the input_image to be a weighted average of the content_image and a noise_image
+    input_image = noise_image * noise_ratio + content_image * (1 - noise_ratio)
+
+    return tf.Variable(tf.convert_to_tensor(input_image, dtype=tf.float32))
 
 def save_image(path, image):
 
