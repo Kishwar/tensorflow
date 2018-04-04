@@ -20,3 +20,5 @@ This repo contains my tensorflow codes
 ```
 python style-transfer-main.py  --style ./imgstyle/StyleImage.jpg --content ./imgcontent/ContentImage.jpg --out ./output/ --epochs 100000 --print-iterations 100 --learning-rate 0.01 
 ```
+   - VGG19 Style Transfer can be also executed by <b> vgg19-style-transfer/Style_Transfer.ipynb </b> IPYTHONG NOTEBOOK
+      * Please change values for <b> --epochs </b> and <b> --print-iterations </b> as per your requirement.
