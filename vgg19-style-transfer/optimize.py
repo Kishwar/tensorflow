@@ -46,7 +46,13 @@ def optimize(ContentImage, StyleImage, OutImage, content_weight, style_weight,
     # ---------------------------------
     #            NOISE IMAGE          #
     # ---------------------------------
-    GenImage = generate_noise_image((1,) + getresizeImage(ContentImage[0]))
+    print('Optimize Input Image to Noise Image : ' + str(ContentImage[0]))
+    GenImageInput = getresizeImage(ContentImage[0])
+    scipy.misc.imsave('./inputnoiseCC.jpg', GenImageInput)
+    print('Optimize : ' + str(GenImageInput.shape))
+
+
+    GenImage = generate_noise_image(GenImageInput)
 
     GenImageModl = vgg19(vgg_path, GenImage)
 

@@ -20,9 +20,9 @@ def load_mat_file(file):
     return scipy.io.loadmat(file)
 
 def resizeImage(image):
-    if not (len(image.shape) == 3 and image.shape[2] == 3):
-        image = np.dstack((image,image,image))
-    return np.resize(image, (IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS)).astype('float32')
+    #if not (len(image.shape) == 3 and image.shape[2] == 3):
+    #    image = np.dstack((image,image,image))
+    return np.resize(image, (IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS))
 
 def getresizeImage(path):
     return resizeImage(scipy.misc.imread(path))
@@ -147,12 +147,16 @@ def generate_noise_image(content_image, noise_ratio = NOISE_RATIO):
     """
     Generates a noisy image by adding random noise to the content_image
     """
+    print('Utils : ' + str(content_image.shape))
+    scipy.misc.imsave('./inputnoiseC.jpg', content_image)
 
     # Generate a random noise_image
-    noise_image = np.random.uniform(-20, 20, (1, IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS)).astype('float32')
+    noise_image = np.random.uniform(-20, 20, (1, IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS))
 
     # Set the input_image to be a weighted average of the content_image and a noise_image
     input_image = noise_image * noise_ratio + content_image * (1 - noise_ratio)
+
+    scipy.misc.imsave('./inputnoise.jpg', input_image[0])
 
     return tf.Variable(tf.convert_to_tensor(input_image, dtype=tf.float32))
 

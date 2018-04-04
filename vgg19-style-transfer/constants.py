@@ -13,8 +13,8 @@ __date__ = '27.03.18' '23:05'
 import numpy as np
 
 # constants
-IMAGE_WIDTH = 400
-IMAGE_HEIGHT = 300
+IMAGE_WIDTH = 750
+IMAGE_HEIGHT = 500
 COLOR_CHANNELS = 3
 MEANS = np.array([123.68, 116.779, 103.939])   #.reshape((1,1,1,3))
 NOISE_RATIO = 0.256
