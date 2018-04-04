@@ -1,4 +1,4 @@
-## VGG19-STYLE-TRANSFER (Python 3.5, Tensorflow LATEST)
+## VGG19-STYLE-TRANSFER FOR IMAGE (Python 3.5, Tensorflow LATEST)
    - Download model weights from http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat <br />
    - VGG19 STYLE TRANSFER can be executed by - <br />
 ```
