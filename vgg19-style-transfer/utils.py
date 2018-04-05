@@ -20,12 +20,10 @@ def load_mat_file(file):
     return scipy.io.loadmat(file)
 
 def resizeImage(image):
-    #if not (len(image.shape) == 3 and image.shape[2] == 3):
-    #    image = np.dstack((image,image,image))
-    return np.resize(image, (IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS))
+    return scipy.misc.imresize(image, (IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS))
 
 def getresizeImage(path):
-    return resizeImage(scipy.misc.imread(path))
+    return resizeImage(scipy.misc.imread(path, mode='RGB'))
 
 def list_files(path):
     files = []
@@ -35,7 +33,6 @@ def list_files(path):
     return files
 
 def gram_matrix(A):
-    # return tf.matmul(tf.transpose(A), A)
     return np.matmul(np.transpose(A), A)
 
 def compute_layer_style_cost(StyImageModl, XStyle, StylImage):
@@ -51,7 +48,7 @@ def compute_layer_style_cost(StyImageModl, XStyle, StylImage):
         features = np.reshape(features, (-1, features.shape[3]))
 
         # compute gram matrix over it
-        J_style_Layer[layer] = coeff * (gram_matrix(features)  / features.size)
+        J_style_Layer[layer] = gram_matrix(features)  / features.size
 
     return J_style_Layer
 

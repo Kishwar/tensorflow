@@ -16,7 +16,7 @@ import time
 
 def optimize(ContentImage, StyleImage, OutImage, content_weight, style_weight,
              tv_weight, vgg_path, epochs=4, print_iterations=4,
-             learning_rate=1e-3):
+             learning_rate=1e1):
 
     # Reset the graph
     tf.reset_default_graph()
@@ -26,6 +26,7 @@ def optimize(ContentImage, StyleImage, OutImage, content_weight, style_weight,
 
     # Create shape of (1, IH, IW, IC)
     img_shape = (1, IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS)
+    print(content_weight, style_weight, tv_weight, learning_rate)
 
     # --------------------------------
     #   PRECOMPUTE CONTENT FEATURES  #
