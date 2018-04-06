@@ -28,3 +28,6 @@ python style-transfer-main.py  --style ./imgstyle/StyleImage.jpg --content ./img
 <img src = 'vgg19-style-transfer/imgcontent/ContentImage.jpg' height = '246px'>
 <a href = 'vgg19-style-transfer/output/out.jpg'><img src = 'vgg19-style-transfer/output/out.jpg' width = '627px'></a>
 </p>
+
+## VGG19-STYLE-TRANSFER FOR VIDEO (Python 3.5, Tensorflow LATEST)
+   - Currently working...
