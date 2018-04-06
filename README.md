@@ -34,3 +34,7 @@ python style-transfer-main.py  --style ./imgstyle/StyleImage.jpg --content ./img
 
 ## STYLE-TRANSFER FOR MUSIC (Python 3.5, Tensorflow LATEST)
    - NEXT IN QUEUE..
+
+## STYLE-TRANSFER FOR AUDIO - VOICE CLONING (Python 3.5, Tensorflow LATEST)
+   - IN QUEUE
+   
