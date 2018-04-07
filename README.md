@@ -31,6 +31,7 @@ python style-transfer-main.py  --style ./imgstyle/StyleImage.jpg --content ./img
 
 ## VGG19-STYLE-TRANSFER FOR VIDEO (Python 3.5, Tensorflow LATEST)
    - Currently working...
+      * https://arxiv.org/abs/1708.04538
 
 ## STYLE-TRANSFER FOR MUSIC (Python 3.5, Tensorflow LATEST)
    - NEXT IN QUEUE..
