@@ -1,0 +1,148 @@
+# These are my hobby project codes developed in python using OpenCV and TensorFlow
+# Some of the projects are tested on Mac, Some on Raspberry Pi
+# Anyone can use these codes without any permission
+#
+# Contact info: Kishwar Kumar [kumar.kishwar@gmail.com]
+# Country: Germany
+#
+
+__author__ = 'kishwarkumar'
+__date__ = '07.04.18' '07:54'
+
+from utils import *
+from vgg19Model import *
+from noiseModel import *
+import time
+
+def optimize(ContentImages, StyleImage, OutImage, CheckPoint, content_weight, style_weight,
+             tv_weight, vgg_path, epochs=4, print_iterations=4, learning_rate=1e1, batch_size=4):
+
+    # Reset the graph
+    tf.reset_default_graph()
+
+    # Start interactive session
+    sess = tf.InteractiveSession()
+
+    # Create shape of (Batch Size, IH, IW, IC)
+    XContentInputShape = (batch_size, IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS)
+
+    # --------------------------------
+    #   PRECOMPUTE CONTENT FEATURES  #
+    # --------------------------------
+
+    content_features = {}
+
+    # lets have the tensor for Content Image(s)
+    XContent = tf.placeholder(tf.float32, shape=XContentInputShape, name="XContent")
+
+    # lets normalize by subtracting mean
+    TContentImages = normalize_image(XContent)
+
+    ContImageModl = vgg19(vgg_path, TContentImages)
+
+    #print('--------------------------------------------------------------------------------------------')
+    #print('optimize.py: Content VGG19 Layer [conv4_2] Shape: ' + str(ContImageModl[CONTENT_LAYER].get_shape()))
+
+    content_features[CONTENT_LAYER] = ContImageModl[CONTENT_LAYER]
+
+    # ---------------------------------
+    #            NOISE IMAGE          #
+    # ---------------------------------
+    preds, Dpreds = noiseModel(XContent/255.0)
+
+    #print('--------------------------------------------------------------------------------------------')
+    #print('optimize.py: Noise Model Input Shape: ' + str(Dpreds['input'].get_shape()))
+    #print('optimize.py: Noise Model output Shape: '+ str(Dpreds['output'].get_shape()))
+
+    GenImageModl = vgg19(vgg_path, normalize_image(preds))
+
+    content_size = tensor_size(content_features[CONTENT_LAYER]) * batch_size
+    assert tensor_size(content_features[CONTENT_LAYER]) == tensor_size(GenImageModl[CONTENT_LAYER])
+
+    # ---------------------------------------------------
+    #  CONTENT LOSS FROM CONTENT IMAGE AND NOISE IMAGE  #
+    # ---------------------------------------------------
+    J_content = compute_content_cost(content_features[CONTENT_LAYER], GenImageModl[CONTENT_LAYER],
+                                        content_weight, content_size)
+
+    # ------------------------------
+    #   PRECOMPUTE STYLE FEATURES  #
+    # ------------------------------
+    XStyle_shape = (1,) + StyleImage.shape
+
+    # lets have the tensor for Style Image
+    XStyle = tf.placeholder(tf.float32, shape=XStyle_shape, name='style_image')
+
+    # lets normalize by subtracting mean
+    TStyleImage = normalize_image(XStyle)
+
+    StyImageModl = vgg19(vgg_path, TStyleImage)
+
+    #print('--------------------------------------------------------------------------------------------')
+    #layer = 'input'
+    # print('optimize.py: Style VGG19 Layer [' +
+    #                str(layer) +'] Shape: ' + str(StyImageModl[layer].get_shape()))
+    #for layer, _ in STYLE_LAYERS:
+        # print('optimize.py: Style VGG19 Layer [' +
+        #            str(layer) +'] Shape: ' + str(StyImageModl[layer].get_shape()))
+
+    NStyleImage = np.array([StyleImage])
+    J_style = compute_style_cost(StyImageModl, GenImageModl, XStyle, NStyleImage, style_weight)
+
+    J_tv = compute_tv_cost(preds, tv_weight, XContentInputShape)
+
+    # Total cost - we need to minimize this
+    J = total_cost(J_content, J_style, J_tv)
+
+    # define optimizer
+    optimizer = tf.train.AdamOptimizer(learning_rate)
+
+    # define train_step
+    train_step = optimizer.minimize(J)
+
+    # Initialize global variables
+    sess.run(tf.global_variables_initializer())
+
+    delta_time = 0
+
+    print('--------------------------------------------------------------------------------------------')
+    print('training started... ')
+
+    for epoch in range(epochs):
+
+        start_time = time.time()
+
+        X_IContent = np.zeros(XContentInputShape, dtype=np.float32)
+
+        for i, path in enumerate(ContentImages[0:4]):
+            print('optimize.py: file added: ' + str(path))
+            X_IContent[i] = getresizeImage(path)
+
+        assert X_IContent.shape == XContentInputShape
+
+        train_step.run(feed_dict={XContent:X_IContent})
+
+        end_time = time.time()
+
+        delta_time += (end_time - start_time)
+
+        if ((epoch % print_iterations == 0) or ((epoch == epochs - 1) and (epochs > 2))):
+
+            start_time = time.time()
+
+            out = sess.run([J_style, J_content, J_tv, J, GenImageModl], feed_dict = {XContent:X_IContent})
+
+            oJ_style, oJ_content, oJ_tv, oJ, oGenImage = out
+
+            saver = tf.train.Saver()
+            res = saver.save(sess, CheckPoint)
+
+            end_time = time.time()
+
+            delta_time += (end_time - start_time)
+
+            print('Processing time %s for %s Epoch(s).' %(delta_time, print_iterations))
+
+            print('Iteration: %d, J: %s, J_style: %s, J_content: %s, J_tv: %s' % (epoch, oJ, oJ_style, oJ_content, oJ_tv))
+
+            delta_time = 0
