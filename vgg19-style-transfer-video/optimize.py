@@ -48,6 +48,7 @@ def optimize(ContentImages, StyleImage, OutImage, CheckPoint, content_weight, st
     # ---------------------------------
     #            NOISE IMAGE          #
     # ---------------------------------
+    print(XContent)
     preds, Dpreds = noiseModel(XContent/255.0)
 
     #print('--------------------------------------------------------------------------------------------')
@@ -106,43 +107,52 @@ def optimize(ContentImages, StyleImage, OutImage, CheckPoint, content_weight, st
     delta_time = 0
 
     print('--------------------------------------------------------------------------------------------')
-    print('training started... ')
+    print('training started... 4 files will be loaded.')
 
     for epoch in range(epochs):
 
-        start_time = time.time()
-
-        X_IContent = np.zeros(XContentInputShape, dtype=np.float32)
-
-        for i, path in enumerate(ContentImages[0:4]):
-            print('optimize.py: file added: ' + str(path))
-            X_IContent[i] = getresizeImage(path)
-
-        assert X_IContent.shape == XContentInputShape
-
-        train_step.run(feed_dict={XContent:X_IContent})
-
-        end_time = time.time()
-
-        delta_time += (end_time - start_time)
-
-        if ((epoch % print_iterations == 0) or ((epoch == epochs - 1) and (epochs > 2))):
+        iterations = 0
+        while iterations * batch_size < len(ContentImages):
 
             start_time = time.time()
 
-            out = sess.run([J_style, J_content, J_tv, J, GenImageModl], feed_dict = {XContent:X_IContent})
+            X_IContent = np.zeros(XContentInputShape, dtype=np.float32)
 
-            oJ_style, oJ_content, oJ_tv, oJ, oGenImage = out
+            curr = iterations * batch_size
+            step = curr + batch_size
 
-            saver = tf.train.Saver()
-            res = saver.save(sess, CheckPoint)
+            for i, path in enumerate(ContentImages[curr:step]):
+                print('optimize.py: file added: ' + str(path))
+                X_IContent[i] = getresizeImage(path)
+
+            assert X_IContent.shape == XContentInputShape
+
+            train_step.run(feed_dict={XContent:X_IContent})
 
             end_time = time.time()
 
             delta_time += (end_time - start_time)
 
-            print('Processing time %s for %s Epoch(s).' %(delta_time, print_iterations))
+            iterations += 1
 
-            print('Iteration: %d, J: %s, J_style: %s, J_content: %s, J_tv: %s' % (epoch, oJ, oJ_style, oJ_content, oJ_tv))
+            if ((epoch % print_iterations == 0) or ((epoch == epochs - 1) and (epochs > 2))):
 
-            delta_time = 0
+                start_time = time.time()
+
+                # out = sess.run([J_style, J_content, J_tv, J, GenImageModl], feed_dict = {XContent:X_IContent})
+                out = sess.run([J_content, J_style, J_tv, J, GenImageModl], feed_dict = {XContent:X_IContent})
+
+                oJ_content, oJ_style, oJ_tv, oJ, oGenImage = out
+
+                # saver = tf.train.Saver()
+                # res = saver.save(sess, CheckPoint)
+
+                end_time = time.time()
+
+                delta_time += (end_time - start_time)
+
+                print('Processing time %s for %s Epoch(s).' %(delta_time, print_iterations))
+
+                print('Iteration: %d, J: %s, J_style: %s, J_content: %s, J_tv: %s' % (epoch, oJ, oJ_style, oJ_content, oJ_tv))
+
+                delta_time = 0

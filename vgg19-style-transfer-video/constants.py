@@ -20,6 +20,7 @@ MEANS = np.array([123.68, 116.779, 103.939])   #.reshape((1,1,1,3))
 NOISE_RATIO = 0.256
 LEARNING_RATE = 1e-3
 NUM_OF_ITERATIONS = 1
+WEIGHTS_INIT_STDEV = .1
 
 STYLE_LAYERS = [
     ('conv1_1', 1),
