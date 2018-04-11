@@ -18,7 +18,7 @@ This repo contains my tensorflow codes
    - Download model weights from http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat <br />
    - VGG19 STYLE TRANSFER can be executed by - <br />
 ```
-python style-transfer-main.py  --style ./imgstyle/StyleImage.jpg --content ./imgcontent/ContentImage.jpg --out ./output/ --epochs 100000 --print-iterations 100 --learning-rate 0.01 
+python style-transfer-main.py  --style ./imgstyle/StyleImage.jpg --content ./imgcontent/ContentImage.jpg --out ./output/ --epochs 100000 --print-iterations 100 --learning-rate 10
 ```
    - VGG19 Style Transfer can be also executed by <b> vgg19-style-transfer/Style_Transfer.ipynb </b> IPYTHONG NOTEBOOK
       * Please change values for <b> --epochs </b> and <b> --print-iterations </b> as per your requirement.
@@ -32,6 +32,9 @@ python style-transfer-main.py  --style ./imgstyle/StyleImage.jpg --content ./img
 ## VGG19-STYLE-TRANSFER FOR VIDEO (Python 3.5, Tensorflow LATEST)
    - Currently working...
       * https://arxiv.org/abs/1708.04538
+```
+python style-transfer-video-main.py --style ./imgstyle/StyleImageRain.jpg --content ./train2014/ --epochs 100 --print-iterations 500 --learning-rate 10 --chkpnt ./chkpnt/
+```     
 
 ## STYLE-TRANSFER FOR MUSIC (Python 3.5, Tensorflow LATEST)
    - NEXT IN QUEUE..
