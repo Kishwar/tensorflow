@@ -124,7 +124,7 @@ def optimize(ContentImages, StyleImage, CheckPoint, content_weight, style_weight
 
             iterations += 1
 
-            if ((epoch % print_iterations == 0) or ((epoch == epochs - 1) and (epochs > 2))):
+            if (iterations % print_iterations == 0) or ((epoch == epochs - 1) and (epochs > 2)):
 
                 start_time = time.time()
 
