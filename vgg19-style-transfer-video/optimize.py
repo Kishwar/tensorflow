@@ -147,3 +147,37 @@ def optimize(ContentImages, StyleImage, CheckPoint, content_weight, style_weight
         saver = tf.train.Saver()
         saver.save(sess, CheckPoint + 'NoiseModel-' + str(epoch) + '-.ckpt')
         print('Noise model saved..' + ' ' + 'NoiseModel-' + str(epoch) + '-.ckpt')
+
+def generate(ContentImage, CheckPoint, Output):
+
+    # Reset the graph
+    tf.reset_default_graph()
+
+    # Start interactive session
+    sess = tf.InteractiveSession()
+
+    soft_config = tf.ConfigProto(allow_soft_placement=True)
+    soft_config.gpu_options.allow_growth = True
+
+    # Create shape of (Batch Size, IH, IW, IC)
+    XContentInputShape = (1, IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS)
+
+    # lets have the tensor for Content Image(s)
+    XContent = tf.placeholder(tf.float32, shape=XContentInputShape, name="XContent")
+
+    preds, _ = noiseModel(XContent)
+
+    saver = tf.train.Saver()
+
+    if os.path.isdir(CheckPoint):
+        ckpt = tf.train.get_checkpoint_state(CheckPoint)
+        if ckpt and ckpt.model_checkpoint_path:
+            saver.restore(sess, ckpt.model_checkpoint_path)
+        else:
+            raise Exception("No checkpoint found...")
+    else:
+        saver.restore(sess, CheckPoint)
+
+    _pred = sess.run(preds, feed_dict={XContent:ContentImage})
+
+    save_image(Output + 'out_' + str(1) + '-.jpg', _pred)
