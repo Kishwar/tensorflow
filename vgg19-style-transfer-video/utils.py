@@ -92,7 +92,6 @@ def compute_content_cost(a_C, a_G, CWt, CCz):
     """
     Computes the content cost
     """
-    print('Content size: ' + str(CCz))
     J_content = CWt * (2 * tf.nn.l2_loss(a_G - a_C) / CCz)
 
     return J_content

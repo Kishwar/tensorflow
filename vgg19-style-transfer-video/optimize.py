@@ -47,7 +47,6 @@ def optimize(ContentImages, StyleImage, CheckPoint, content_weight, style_weight
     # ---------------------------------
     #            NOISE IMAGE          #
     # ---------------------------------
-    print(XContent)
     preds, Dpreds = noiseModel(XContent/255.0)
 
     print('--------------------------------------------------------------------------------------------')
@@ -144,5 +143,7 @@ def optimize(ContentImages, StyleImage, CheckPoint, content_weight, style_weight
 
                 delta_time = 0
 
+        print('Saving Noise Model...')
         saver = tf.train.Saver()
         saver.save(sess, CheckPoint + 'NoiseModel-' + str(epoch) + '-.ckpt')
+        print('Noise model saved..' + ' ' + 'NoiseModel-' + str(epoch) + '-.ckpt')
