@@ -25,7 +25,7 @@ def build_parser():
 
     parser.add_argument('--print-iterations', type=int,
                         dest='print_iterations', help='print on terminal after these number of iterations',
-                        metavar='CHECKPOINT_ITERATIONS', default=PRINT_ITERATIONS)
+                        metavar='LOSS_PRINT_ITERATIONS', default=PRINT_ITERATIONS)
 
     parser.add_argument('--epochs', type=int,
                         dest='epochs', help='num epochs',
