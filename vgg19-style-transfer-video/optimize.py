@@ -1,7 +1,3 @@
-# These are my hobby project codes developed in python using OpenCV and TensorFlow
-# Some of the projects are tested on Mac, Some on Raspberry Pi
-# Anyone can use these codes without any permission
-#
 # Contact info: Kishwar Kumar [kumar.kishwar@gmail.com]
 # Country: Germany
 #
@@ -9,13 +5,16 @@
 __author__ = 'kishwarkumar'
 __date__ = '07.04.18' '07:54'
 
-from utils import *
 from vgg19Model import *
 from noiseModel import *
 import time
 
-def optimize(ContentImages, StyleImage, OutImage, CheckPoint, content_weight, style_weight,
+def optimize(ContentImages, StyleImage, CheckPoint, content_weight, style_weight,
              tv_weight, vgg_path, epochs=4, print_iterations=4, learning_rate=1e1, batch_size=4):
+
+    print('--------------------------------------------------------------------------------------------')
+    print('content weight=%d, style weight=%d, tv weight=%d' %(content_weight, style_weight, tv_weight))
+    print('epochs=%d, print iterations=%d, learning rate=%d' %(epochs, print_iterations, learning_rate))
 
     # Reset the graph
     tf.reset_default_graph()
@@ -40,8 +39,8 @@ def optimize(ContentImages, StyleImage, OutImage, CheckPoint, content_weight, st
 
     ContImageModl = vgg19(vgg_path, TContentImages)
 
-    #print('--------------------------------------------------------------------------------------------')
-    #print('optimize.py: Content VGG19 Layer [conv4_2] Shape: ' + str(ContImageModl[CONTENT_LAYER].get_shape()))
+    print('--------------------------------------------------------------------------------------------')
+    print('optimize.py: Content VGG19 Layer [conv4_2] Shape: ' + str(ContImageModl[CONTENT_LAYER].get_shape()))
 
     content_features[CONTENT_LAYER] = ContImageModl[CONTENT_LAYER]
 
@@ -51,9 +50,9 @@ def optimize(ContentImages, StyleImage, OutImage, CheckPoint, content_weight, st
     print(XContent)
     preds, Dpreds = noiseModel(XContent/255.0)
 
-    #print('--------------------------------------------------------------------------------------------')
-    #print('optimize.py: Noise Model Input Shape: ' + str(Dpreds['input'].get_shape()))
-    #print('optimize.py: Noise Model output Shape: '+ str(Dpreds['output'].get_shape()))
+    print('--------------------------------------------------------------------------------------------')
+    print('optimize.py: Noise Model Input Shape: ' + str(Dpreds['input'].get_shape()))
+    print('optimize.py: Noise Model output Shape: '+ str(Dpreds['output'].get_shape()))
 
     GenImageModl = vgg19(vgg_path, normalize_image(preds))
 
@@ -78,14 +77,6 @@ def optimize(ContentImages, StyleImage, OutImage, CheckPoint, content_weight, st
     TStyleImage = normalize_image(XStyle)
 
     StyImageModl = vgg19(vgg_path, TStyleImage)
-
-    #print('--------------------------------------------------------------------------------------------')
-    #layer = 'input'
-    # print('optimize.py: Style VGG19 Layer [' +
-    #                str(layer) +'] Shape: ' + str(StyImageModl[layer].get_shape()))
-    #for layer, _ in STYLE_LAYERS:
-        # print('optimize.py: Style VGG19 Layer [' +
-        #            str(layer) +'] Shape: ' + str(StyImageModl[layer].get_shape()))
 
     NStyleImage = np.array([StyleImage])
     J_style = compute_style_cost(StyImageModl, GenImageModl, XStyle, NStyleImage, style_weight)
@@ -122,7 +113,6 @@ def optimize(ContentImages, StyleImage, OutImage, CheckPoint, content_weight, st
             step = curr + batch_size
 
             for i, path in enumerate(ContentImages[curr:step]):
-                print('optimize.py: file added: ' + str(path))
                 X_IContent[i] = getresizeImage(path)
 
             assert X_IContent.shape == XContentInputShape
@@ -139,20 +129,20 @@ def optimize(ContentImages, StyleImage, OutImage, CheckPoint, content_weight, st
 
                 start_time = time.time()
 
-                # out = sess.run([J_style, J_content, J_tv, J, GenImageModl], feed_dict = {XContent:X_IContent})
                 out = sess.run([J_content, J_style, J_tv, J, GenImageModl], feed_dict = {XContent:X_IContent})
 
                 oJ_content, oJ_style, oJ_tv, oJ, oGenImage = out
-
-                # saver = tf.train.Saver()
-                # res = saver.save(sess, CheckPoint)
 
                 end_time = time.time()
 
                 delta_time += (end_time - start_time)
 
-                print('Processing time %s for %s Epoch(s).' %(delta_time, print_iterations))
+                print('Processing time %s for %s Epoch(s). %d%% finished.' %(delta_time, print_iterations,
+                                                                             int(((iterations * batch_size)/len(ContentImages))*100)))
 
                 print('Iteration: %d, J: %s, J_style: %s, J_content: %s, J_tv: %s' % (epoch, oJ, oJ_style, oJ_content, oJ_tv))
 
                 delta_time = 0
+
+        saver = tf.train.Saver()
+        saver.save(sess, CheckPoint + 'NoiseModel-' + str(epoch) + '-.ckpt')

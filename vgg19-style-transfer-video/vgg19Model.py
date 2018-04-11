@@ -1,7 +1,3 @@
-# These are my hobby project codes developed in python using OpenCV and TensorFlow
-# Some of the projects are tested on Mac, Some on Raspberry Pi
-# Anyone can use these codes without any permission
-#
 # Contact info: Kishwar Kumar [kumar.kishwar@gmail.com]
 # Country: Germany
 #
@@ -18,7 +14,7 @@ def vgg19(path, Image):
     """
     Returns a model for the purpose of 'painting' the picture.
     Takes only the convolution layer weights and wrap using the TensorFlow
-    Conv2d, Relu and AveragePooling layer. VGG actually uses maxpool but
+    Conv2d, Relu and AveragePooling layer. VGG actually uses avgpool but
     the paper indicates that using AveragePooling yields better results.
     The last few fully connected layers are not used.
     Here is the detailed configuration of the VGG model:
@@ -26,12 +22,12 @@ def vgg19(path, Image):
         1 is relu
         2 is conv1_2 (3, 3, 64, 64)
         3 is relu
-        4 is maxpool
+        4 is avgpool
         5 is conv2_1 (3, 3, 64, 128)
         6 is relu
         7 is conv2_2 (3, 3, 128, 128)
         8 is relu
-        9 is maxpool
+        9 is avgpool
         10 is conv3_1 (3, 3, 128, 256)
         11 is relu
         12 is conv3_2 (3, 3, 256, 256)
@@ -40,7 +36,7 @@ def vgg19(path, Image):
         15 is relu
         16 is conv3_4 (3, 3, 256, 256)
         17 is relu
-        18 is maxpool
+        18 is avgpool
         19 is conv4_1 (3, 3, 256, 512)
         20 is relu
         21 is conv4_2 (3, 3, 512, 512)
@@ -49,7 +45,7 @@ def vgg19(path, Image):
         24 is relu
         25 is conv4_4 (3, 3, 512, 512)
         26 is relu
-        27 is maxpool
+        27 is avgpool
         28 is conv5_1 (3, 3, 512, 512)
         29 is relu
         30 is conv5_2 (3, 3, 512, 512)
@@ -58,7 +54,7 @@ def vgg19(path, Image):
         33 is relu
         34 is conv5_4 (3, 3, 512, 512)
         35 is relu
-        36 is maxpool
+        36 is avgpool
         37 is fullyconnected (7, 7, 512, 4096)
         38 is relu
         39 is fullyconnected (1, 1, 4096, 4096)
@@ -95,7 +91,7 @@ def vgg19(path, Image):
     L2 = tf.nn.conv2d(L1, filter=W, strides=[1, 1, 1, 1], padding='SAME')
     L2 = tf.nn.bias_add(L2, b)
     L2 = graph['conv1_2']  = tf.nn.relu(L2)
-    L2 = graph['maxpool1'] = tf.nn.max_pool(L2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    L2 = graph['avgpool1'] = tf.nn.avg_pool(L2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     W, b = _weights(5, 'conv2_1')
     W = tf.constant(W)
@@ -108,7 +104,7 @@ def vgg19(path, Image):
     L4 = tf.nn.conv2d(L3, filter=W, strides=[1, 1, 1, 1], padding='SAME')
     L4 = tf.nn.bias_add(L4, b)
     L4 = graph['conv2_2']  = tf.nn.relu(L4)
-    L4 = graph['maxpool2'] =  tf.nn.max_pool(L4, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    L4 = graph['avgpool2'] =  tf.nn.avg_pool(L4, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     W, b = _weights(10, 'conv3_1')
     W = tf.constant(W)
@@ -133,7 +129,7 @@ def vgg19(path, Image):
     L8 = tf.nn.conv2d(L7, filter=W, strides=[1, 1, 1, 1], padding='SAME')
     L8 = tf.nn.bias_add(L8, b)
     L8 = graph['conv3_4']  = tf.nn.relu(L8)
-    L8 = graph['maxpool3'] =  tf.nn.max_pool(L8, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    L8 = graph['avgpool3'] =  tf.nn.avg_pool(L8, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     W, b = _weights(19, 'conv4_1')
     W = tf.constant(W)
@@ -158,7 +154,7 @@ def vgg19(path, Image):
     L12 = tf.nn.conv2d(L11, filter=W, strides=[1, 1, 1, 1], padding='SAME')
     L12 = tf.nn.bias_add(L12, b)
     L12 = graph['conv4_4']  = tf.nn.relu(L12)
-    L12 = graph['maxpool4'] =  tf.nn.max_pool(L12, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    L12 = graph['avgpool4'] =  tf.nn.avg_pool(L12, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     W, b = _weights(28, 'conv5_1')
     W = tf.constant(W)
@@ -183,7 +179,7 @@ def vgg19(path, Image):
     L16 = tf.nn.conv2d(L15, filter=W, strides=[1, 1, 1, 1], padding='SAME')
     L16 = tf.nn.bias_add(L16, b)
     L16 = graph['conv5_4']  = tf.nn.relu(L16)
-    L16 = graph['maxpool5'] =  tf.nn.max_pool(L16, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    L16 = graph['avgpool5'] =  tf.nn.avg_pool(L16, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     # L17 = FC Layer - We don't need it here [FC-4096]
     # L18 = FC Layer - We don't need it here [FC-4096]

@@ -1,15 +1,6 @@
-# These are my hobby project codes developed in python using OpenCV and TensorFlow
-# Some of the projects are tested on Mac, Some on Raspberry Pi
-# Anyone can use these codes without any permission
-#
 # Contact info: Kishwar Kumar [kumar.kishwar@gmail.com]
 # Country: Germany
 #
-
-# License
-# Copyright (c) 2016 Logan Engstrom. Contact me for commercial use (or rather any use that is not academic research)
-# (email: engstrom at my university's domain dot edu). Free for research use, as long as proper attribution is given
-# and this copyright notice is retained.
 
 __author__ = 'kishwarkumar'
 __date__ = '06.04.18' '11:50'
@@ -28,12 +19,8 @@ def build_parser():
                         dest='train_path', help='path to the content image',
                         metavar='CONTENT / TRAIN_PATH', required=True)
 
-    parser.add_argument('--out', type=str,
-                        dest='out_path', help='path to the output directory',
-                        metavar='OUTDIR', required=True)
-
     parser.add_argument('--chkpnt', type=str,
-                        dest='checkpoint', help='path to store noise model',
+                        dest='checkpoint', help='path to store noise model (DIR)',
                         metavar='CHECKPOINT', required=True)
 
     parser.add_argument('--print-iterations', type=int,
@@ -81,9 +68,9 @@ if __name__ == "__main__":
 
     # lets get the style image
     StyleImage = getresizeImage(Args.style)    # np array
-    #print('\n')
-    #print('--------------------------------------------------------------------------------------------')
-    #print('main: Style Image   - ' + str(Args.style))
+    print('\n')
+    print('--------------------------------------------------------------------------------------------')
+    print('main: Style Image   - ' + str(Args.style))
 
     # lets get content images, stack all the paths together
     LContentImages = list_files(Args.train_path)
@@ -93,7 +80,6 @@ if __name__ == "__main__":
     args = [
         ContentImages,
         StyleImage,
-        Args.out_path,
         Args.checkpoint,
         Args.content_weight,
         Args.style_weight,
