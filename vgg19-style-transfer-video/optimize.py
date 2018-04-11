@@ -124,7 +124,7 @@ def optimize(ContentImages, StyleImage, CheckPoint, content_weight, style_weight
 
             iterations += 1
 
-            if ((epoch % print_iterations == 0) or ((epoch == epochs - 1) and (epochs > 2))):
+            if (iterations % print_iterations == 0) or ((epoch == epochs - 1) and (epochs > 2)):
 
                 start_time = time.time()
 
@@ -181,3 +181,4 @@ def generate(ContentImage, CheckPoint, Output):
     _pred = sess.run(preds, feed_dict={XContent:ContentImage})
 
     save_image(Output + 'out_' + str(1) + '-.jpg', _pred)
+
