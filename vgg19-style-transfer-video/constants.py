@@ -29,6 +29,7 @@ CONTENT_LAYER = 'conv4_2'
 VGG_PATH = 'pre_trained_model/imagenet-vgg-verydeep-19.mat'
 NUM_EPOCHS = 4
 PRINT_ITERATIONS = 4
+CHECKPOINT_EPOCH = 1
 BATCH_SIZE = 4
 
 CONTENT_WEIGHT = 7.5e0

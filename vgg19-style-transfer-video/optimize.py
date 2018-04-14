@@ -8,8 +8,10 @@ __date__ = '07.04.18' '07:54'
 from vgg19Model import *
 from noiseModel import *
 import time
+import numpy as np
+import cv2
 
-def optimize(ContentImages, StyleImage, CheckPoint, content_weight, style_weight,
+def optimize(ContentImages, StyleImage, CheckPoint, chkpnt_epochs, content_weight, style_weight,
              tv_weight, vgg_path, epochs=4, print_iterations=4, learning_rate=1e1, batch_size=4):
 
     print('--------------------------------------------------------------------------------------------')
@@ -124,7 +126,12 @@ def optimize(ContentImages, StyleImage, CheckPoint, content_weight, style_weight
 
             iterations += 1
 
-            if (iterations % print_iterations == 0) or ((epoch == epochs - 1) and (epochs > 2)):
+            if len(ContentImages) < 500:  # why 500, I don't know..
+                printIt = ((epoch % print_iterations == 0) or (epoch % chkpnt_epochs == 0)) and (epoch > 0)
+            else:
+                printIt = (iterations % print_iterations == 0) or (chkpnt_epochs % epoch == 0)
+
+            if printIt or ((epoch == epochs - 1) and (epochs > 2)):
 
                 start_time = time.time()
 
@@ -136,49 +143,81 @@ def optimize(ContentImages, StyleImage, CheckPoint, content_weight, style_weight
 
                 delta_time += (end_time - start_time)
 
-                print('Processing time %s for %s Epoch(s). %d%% finished.' %(delta_time, print_iterations,
-                                                                             int(((iterations * batch_size)/len(ContentImages))*100)))
+                # print('Processing time %s for %s Epoch(s). %d%% finished.' %(delta_time, print_iterations,
+                #                                                             int(((iterations * batch_size)/len(ContentImages))*100)))
+                print('Processing time %s' %delta_time)
 
                 print('Iteration: %d, J: %s, J_style: %s, J_content: %s, J_tv: %s' % (epoch, oJ, oJ_style, oJ_content, oJ_tv))
 
                 delta_time = 0
 
-        print('Saving Noise Model...')
-        saver = tf.train.Saver()
-        saver.save(sess, CheckPoint + 'NoiseModel-' + str(epoch) + '-.ckpt')
-        print('Noise model saved..' + ' ' + 'NoiseModel-' + str(epoch) + '-.ckpt')
+        if epoch > 0 and epoch % chkpnt_epochs == 0:
+            print('Saving Noise Model...')
+            saver = tf.train.Saver()
+            saver.save(sess, CheckPoint + 'NoiseModel-' + str(epoch) + '-.ckpt')
+            print('Noise model saved..' + ' ' + 'NoiseModel-' + str(epoch) + '-.ckpt')
+            time.sleep(500)
 
-def generate(ContentImage, CheckPoint, Output):
+def generate(ContentImage, CheckPoint, Output, CamURL):
 
-    # Reset the graph
-    tf.reset_default_graph()
-
-    # Start interactive session
-    sess = tf.InteractiveSession()
-
-    soft_config = tf.ConfigProto(allow_soft_placement=True)
-    soft_config.gpu_options.allow_growth = True
-
-    # Create shape of (Batch Size, IH, IW, IC)
-    XContentInputShape = (1, IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS)
-
-    # lets have the tensor for Content Image(s)
-    XContent = tf.placeholder(tf.float32, shape=XContentInputShape, name="XContent")
-
-    preds, _ = noiseModel(XContent)
-
-    saver = tf.train.Saver()
-
-    if os.path.isdir(CheckPoint):
-        ckpt = tf.train.get_checkpoint_state(CheckPoint)
-        if ckpt and ckpt.model_checkpoint_path:
-            saver.restore(sess, ckpt.model_checkpoint_path)
-        else:
-            raise Exception("No checkpoint found...")
+    # Check if we have cam or image as input
+    if CamURL == '255':
+        # TODO
+        print('TODO')
     else:
-        saver.restore(sess, CheckPoint)
+        # get camera handle
+        cap = cv2.VideoCapture(CamURL)
 
-    _pred = sess.run(preds, feed_dict={XContent:ContentImage})
+        while (True):
 
-    save_image(Output + 'out_' + str(1) + '-.jpg', _pred)
+            # Capture frame-by-frame
+            ret, frame = cap.read()
+
+            frame = resizeImage(frame)
+
+            g = tf.Graph()
+
+            soft_config = tf.ConfigProto(allow_soft_placement=True)
+            soft_config.gpu_options.allow_growth = True
+
+            with g.as_default(), g.device('/gpu:0'), \
+                 tf.Session(config=soft_config) as sess:
+
+                # Create shape of (Batch Size, IH, IW, IC)
+                XContentInputShape = (1, IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS)
+
+                # lets have the tensor for Content Image(s)
+                XContent = tf.placeholder(tf.float32, shape=XContentInputShape, name="XContent")
+
+                preds, _ = noiseModel(XContent)
+
+                saver = tf.train.Saver()
+
+                X = np.zeros(XContentInputShape, dtype=np.float32)
+                X[0] = frame
+
+                if os.path.isdir(CheckPoint):
+                    ckpt = tf.train.get_checkpoint_state(CheckPoint)
+                    if ckpt and ckpt.model_checkpoint_path:
+                        saver.restore(sess, ckpt.model_checkpoint_path)
+                    else:
+                        raise Exception("No checkpoint found...")
+                else:
+                    saver.restore(sess, CheckPoint)
+
+                _pred = sess.run(preds, feed_dict={XContent: X})
+
+                # Display the resulting frame
+                cv2.imshow('styled', get_video_image(_pred))
+
+            # Display the frame
+            cv2.imshow('frame', frame)
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        # When everything done, release the capture
+        cap.release()
+        cv2.destroyAllWindows()
+
+
 

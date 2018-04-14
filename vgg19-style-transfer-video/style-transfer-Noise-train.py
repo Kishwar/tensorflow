@@ -27,6 +27,10 @@ def build_parser():
                         dest='print_iterations', help='print on terminal after these number of iterations',
                         metavar='LOSS_PRINT_ITERATIONS', default=PRINT_ITERATIONS)
 
+    parser.add_argument('--chkpnt-epochs', type=int,
+                        dest='chkpnt_epochs', help='create check point after these many epochs, default = 1',
+                        metavar='CHECKPOINT_EPOCHS', default=CHECKPOINT_EPOCH)
+
     parser.add_argument('--epochs', type=int,
                         dest='epochs', help='num epochs',
                         metavar='EPOCHS', default=NUM_EPOCHS)
@@ -81,6 +85,7 @@ if __name__ == "__main__":
         ContentImages,
         StyleImage,
         Args.checkpoint,
+        Args.chkpnt_epochs,
         Args.content_weight,
         Args.style_weight,
         Args.tv_weight,

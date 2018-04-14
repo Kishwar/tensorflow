@@ -162,3 +162,13 @@ def tensor_size(tensor):
     from operator import mul
     import functools
     return functools.reduce(mul, (d.value for d in tensor.get_shape()[1:]), 1)
+
+def get_video_image(image):
+
+    # Un-normalize the image so that it looks good
+    image = image + MEANS
+
+    # Clip and Save the image
+    image = np.clip(image[0], 0, 255).astype('uint8')
+
+    return image
