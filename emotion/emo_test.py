@@ -19,9 +19,9 @@ import os
 
 # globals
 FLAGS = tf.flags.FLAGS
-tf.flags.DEFINE_string("data_dir", "./data/", "Path to data files")
-tf.flags.DEFINE_string("logs_dir", "./logs/", "Path to where log files are to be saved")
-tf.flags.DEFINE_string("model_dir", "./model/", "Path where checkpoint models are saved")
+tf.flags.DEFINE_string("data_dir", "data", "Path to data files")
+tf.flags.DEFINE_string("logs_dir", "logs", "Path to where log files are to be saved")
+tf.flags.DEFINE_string("model_dir", "model", "Path where checkpoint models are saved")
 tf.flags.DEFINE_string("mode", "train", "mode: train (Default)/ test")
 
 emotion = {0:'anger', 1:'disgust',\
@@ -55,10 +55,10 @@ def main(argv=None):
 
         if ckpt and ckpt.model_checkpoint_path:
             saver.restore(sess, ckpt.model_checkpoint_path)
-            print "Model loaded! ckpt:" + str(tf.train.latest_checkpoint(FLAGS.model_dir))
+            print("Model loaded! ckpt:" + str(tf.train.latest_checkpoint(FLAGS.model_dir)))
 
              # load image
-            image = cv2.imread('./Face.jpg')
+            image = cv2.imread('face.jpg')
 
             # convert to gray scale
             gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -70,8 +70,8 @@ def main(argv=None):
             predict_op = tf.argmax(emo_model, 1)
             face = emotion[predict_op.eval(feed_dict={input_dataset: [input_img], p_keep_conv: 0.8}, session=sess)[0]]
 
-            os.system('say ' + 'It is a ' + str(face) + 'face!')
-
+            #os.system('say ' + 'It is a ' + str(face) + 'face!')
+            print(str(face))
         else:
             exit()
 

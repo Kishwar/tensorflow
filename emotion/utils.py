@@ -13,7 +13,7 @@ __date__ = '25.03.18' '20:34'
 import os
 import pandas as pd
 import numpy as np
-import cPickle as pickle
+import pickle
 from constants import *
 
 def create_onehot_label(x):
@@ -24,9 +24,10 @@ def create_onehot_label(x):
 def read_data(data_dir):
     # lets open pickle file if exists
     pickle_file = os.path.join(data_dir, "EmoData.pickle")
+    print(pickle_file)
     if not os.path.exists(pickle_file):
         # EmoData.pickle doesn't exist
-        print "Reading train.csv ..."
+        print("Reading train.csv ...")
         train_filename = os.path.join(data_dir, "train.csv")
         data_frame = pd.read_csv(train_filename)
 
@@ -36,7 +37,8 @@ def read_data(data_dir):
 
         # reshapping data
         train_images = np.vstack(data_frame['Pixels']).reshape(-1, IMAGE_SIZE, IMAGE_SIZE, 1)
-        train_labels = np.array([map(create_onehot_label, data_frame['Emotion'].values)]).reshape(-1, NUM_LABELS)
+        # train_labels = np.array([map(create_onehot_label, data_frame['Emotion'].values)])  # .reshape(-1, NUM_LABELS)
+        train_labels = np.array([list(map(create_onehot_label, data_frame['Emotion'].values))]).reshape(-1, NUM_LABELS)
 
         # get 10% data as validation data
         permutations = np.random.permutation(train_images.shape[0])
@@ -48,7 +50,7 @@ def read_data(data_dir):
         train_images = train_images[validation_percent:]
         train_labels = train_labels[validation_percent:]
 
-        print "Reading test.csv ..."
+        print("Reading test.csv ...")
         test_filename = os.path.join(data_dir, "test.csv")
         data_frame = pd.read_csv(test_filename)
 
@@ -62,7 +64,7 @@ def read_data(data_dir):
         # lets write EmoData.pickle file
         with open(pickle_file, "wb") as file:
             try:
-                print 'Picking ...'
+                print('Picking ...')
                 save = {
                     "train_images": train_images,
                     "train_labels": train_labels,
