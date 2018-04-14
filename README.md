@@ -32,8 +32,10 @@ python style-transfer-main.py  --style ./imgstyle/StyleImage.jpg --content ./img
 ## VGG19-STYLE-TRANSFER FOR VIDEO (Python 3.5, Tensorflow LATEST) - Expected to be finished 30/04/2018
    - Currently working...
       * https://arxiv.org/abs/1708.04538
+      
+   - We will use only 16 images from COCO Train2014
 ```
-python style-transfer-video-main.py --style ./imgstyle/StyleImageRain.jpg --content ./train2014/ --epochs 100 --print-iterations 500 --learning-rate 10 --chkpnt ./chkpnt/
+python style-transfer-video-main.py --style imgstyle/udnie.jpg --content trainingContent\ --print-iterations 500 --chkpnt-epochs 2000 --epochs 50000 --learning-rate 10  --chkpnt chkpnt\
 ```     
 
 ## STYLE-TRANSFER FOR MUSIC (Python 3.5, Tensorflow LATEST) - Expected to be finished 30/06/2018
