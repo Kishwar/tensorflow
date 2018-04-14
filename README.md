@@ -29,16 +29,16 @@ python style-transfer-main.py  --style ./imgstyle/StyleImage.jpg --content ./img
 <a href = 'vgg19-style-transfer/output/out.jpg'><img src = 'vgg19-style-transfer/output/out.jpg' width = '627px'></a>
 </p>
 
-## VGG19-STYLE-TRANSFER FOR VIDEO (Python 3.5, Tensorflow LATEST)
+## VGG19-STYLE-TRANSFER FOR VIDEO (Python 3.5, Tensorflow LATEST) - Expected to be finished 30/04/2018
    - Currently working...
       * https://arxiv.org/abs/1708.04538
 ```
 python style-transfer-video-main.py --style ./imgstyle/StyleImageRain.jpg --content ./train2014/ --epochs 100 --print-iterations 500 --learning-rate 10 --chkpnt ./chkpnt/
 ```     
 
-## STYLE-TRANSFER FOR MUSIC (Python 3.5, Tensorflow LATEST)
+## STYLE-TRANSFER FOR MUSIC (Python 3.5, Tensorflow LATEST) - Expected to be finished 30/06/2018
    - NEXT IN QUEUE..
 
-## STYLE-TRANSFER FOR AUDIO - VOICE CLONING (Python 3.5, Tensorflow LATEST)
+## STYLE-TRANSFER FOR AUDIO - VOICE CLONING (Python 3.5, Tensorflow LATEST) - Expected to be finished 30/11/2018
    - IN QUEUE
    
