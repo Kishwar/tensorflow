@@ -29,7 +29,8 @@ def list_files(path):
     return files
 
 def gram_matrix(A):
-    return np.matmul(np.transpose(A), A)
+    # return np.matmul(np.transpose(A), A)
+    return tf.matmul(tf.transpose(A), A)
 
 def compute_layer_style_cost(StyImageModl, XStyle, StylImage):
 
@@ -44,7 +45,7 @@ def compute_layer_style_cost(StyImageModl, XStyle, StylImage):
         features = np.reshape(features, (-1, features.shape[3]))
 
         # compute gram matrix over it
-        J_style_Layer[layer] = gram_matrix(features)  / features.size
+        J_style_Layer[layer] = tf.divide(gram_matrix(features), features.size)
 
     return J_style_Layer
 
@@ -63,7 +64,13 @@ def compute_layer_gen_cost(GenImageModl):
 
         features_T = tf.transpose(features, perm=[0,2,1])
 
-        J_gen_Layer[layer] = tf.matmul(features_T, features) / (n_H * n_W * n_C)
+        numerator = tf.matmul(features_T, features)
+        denominator = (tf.multiply(tf.multiply(n_H, n_W), n_C))
+
+        # print(numerator)
+        # print(tf.cast(denominator, tf.float32))
+
+        J_gen_Layer[layer] = tf.divide(tf.cast(numerator, tf.float32), tf.cast(denominator, tf.float32))
 
     return J_gen_Layer
 
@@ -82,9 +89,9 @@ def compute_style_cost(StyImageModl, GenImageModl, XStyle, StylImage, style_weig
 
         loss_Gen = gen_loss_layer[layer]
 
-        J_style.append(2 * tf.nn.l2_loss(loss_Gen - loss_Style) / loss_Style.size)
+        J_style.append(tf.multiply(tf.to_float(2), tf.divide(tf.nn.l2_loss(tf.subtract(loss_Gen, loss_Style)), tf.cast(tf.reduce_prod(loss_Style.get_shape()), tf.float32))))
 
-    J_style = style_weight * functools.reduce(tf.add, J_style)
+    J_style = tf.multiply(style_weight, functools.reduce(tf.add, J_style))
 
     return J_style
 
@@ -92,7 +99,7 @@ def compute_content_cost(a_C, a_G, CWt, CCz):
     """
     Computes the content cost
     """
-    J_content = CWt * (2 * tf.nn.l2_loss(a_G - a_C) / CCz)
+    J_content = tf.multiply(CWt, tf.multiply(tf.to_float(2), tf.divide(tf.nn.l2_loss(tf.subtract(a_G, a_C)), CCz)))
 
     return J_content
 
@@ -101,17 +108,17 @@ def compute_tv_cost(GenImage, tv_weight, batch_shape):
     # total variation denoising
     tv_y_size = tensor_size(GenImage[:,1:,:,:])
     tv_x_size = tensor_size(GenImage[:,:,1:,:])
-    y_tv = tf.nn.l2_loss(GenImage[:,1:,:,:] - GenImage[:,:batch_shape[1]-1,:,:])
-    x_tv = tf.nn.l2_loss(GenImage[:,:,1:,:] - GenImage[:,:,:batch_shape[2]-1,:])
+    y_tv = tf.nn.l2_loss(tf.subtract(GenImage[:,1:,:,:], GenImage[:,:batch_shape[1]-1,:,:]))
+    x_tv = tf.nn.l2_loss(tf.subtract(GenImage[:,:,1:,:], GenImage[:,:,:batch_shape[2]-1,:]))
 
-    J_tv = tv_weight * 2 * (x_tv / tv_x_size + y_tv / tv_y_size)
+    J_tv = tf.multiply(tv_weight, tf.multiply(tf.to_float(2), tf.divide(tf.divide(x_tv, tf.add(tf.to_float(tv_x_size), y_tv)), tv_y_size)))
 
     return J_tv
 
 
 def total_cost(J_content, J_style, J_tv):
 
-    J = J_content + J_style + J_tv
+    J = tf.add(tf.add(J_content, J_style), J_tv)
 
     return J
 
@@ -121,7 +128,7 @@ def normalize_image(image):
     """
 
     # Substract the mean to match the expected input
-    image = image - MEANS
+    image = tf.subtract(image, MEANS)
 
     return image
 

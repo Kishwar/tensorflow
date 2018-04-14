@@ -30,7 +30,7 @@ VGG_PATH = 'pre_trained_model/imagenet-vgg-verydeep-19.mat'
 NUM_EPOCHS = 4
 PRINT_ITERATIONS = 4
 CHECKPOINT_EPOCH = 1
-BATCH_SIZE = 4
+BATCH_SIZE = 16
 
 CONTENT_WEIGHT = 7.5e0
 STYLE_WEIGHT = 1e2
