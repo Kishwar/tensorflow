@@ -36,3 +36,5 @@ emotion/model/checkpoint
 vgg19-style-transfer/pre_trained_model/imagenet-vgg-verydeep-19.mat
 
 *.mat
+
+vgg19-style-transfer-video/chkpnt/checkpoint

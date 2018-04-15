@@ -171,6 +171,10 @@ def generate(ContentImage, CheckPoint, Output, CamURL):
         # TODO
         print('TODO')
     else:
+        try:
+            CamURL = int(CamURL)
+        except ValueError:
+            print(CamURL)
         # get camera handle
         cap = cv2.VideoCapture(CamURL)
         
@@ -216,10 +220,10 @@ def generate(ContentImage, CheckPoint, Output, CamURL):
                     _pred = sess.run(preds, feed_dict={XContent: X})
             
                     # Display the resulting frame
-                    # cv2.imshow('styled', get_video_image(_pred))
+                    cv2.imshow('styled', get_video_image(_pred))
             
                     # Display the frame
-                    # cv2.imshow('frame', frame)
+                    cv2.imshow('frame', frame)
             
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break
