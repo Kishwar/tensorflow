@@ -34,22 +34,20 @@ if __name__ == "__main__":
     parser = build_parser()
     Args = parser.parse_args()
     if Args.cam_url == '255':
-        # lets get the input image
-        ContentImage = getresizeImage(Args.in_path)    # np array
 
         # args
         args = [
-            ContentImage,
+            Args.in_path,
             Args.checkpoint_dir,
             Args.out_path,
             Args.cam_url
                ]
     else:
-        ContentImage = None
+        Args.in_path = None
         Args.out_path = None
 
         args = [
-            ContentImage,
+            Args.in_path,
             Args.checkpoint_dir,
             Args.out_path,
             Args.cam_url

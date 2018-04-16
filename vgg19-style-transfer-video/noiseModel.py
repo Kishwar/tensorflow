@@ -132,7 +132,7 @@ def noiseModel(TImage):
     m, n_H, n_W, n_C = m, int(n_H * 2), int(n_W * 2), n_C
 
     L20 = tf.nn.conv2d_transpose(L19, W20, tf.stack([m, n_H, n_W, 64]),
-                                 [1, 2, 2, 1], padding='SAME')
+                                 strides=[1, 2, 2, 1], padding='SAME')
     L20 = Layer_Norm(L20)
     L20 = tf.nn.relu(L20)
 
@@ -142,7 +142,7 @@ def noiseModel(TImage):
     m, n_H, n_W, n_C = m, int(n_H * 2), int(n_W * 2), n_C
 
     L21 = tf.nn.conv2d_transpose(L20, W21, tf.stack([m, n_H, n_W, 64]),
-                                 [1, 2, 2, 1], padding='SAME')
+                                 strides=[1, 2, 2, 1], padding='SAME')
     L21 = Layer_Norm(L21)
     L21 = tf.nn.relu(L21)
 
