@@ -179,3 +179,4 @@ def Layer_Norm(L):
     # lets normalize the network layer
     normalized = (L - mu) / (sigma_sq + epsilon)**(.5)
     return normalized
+

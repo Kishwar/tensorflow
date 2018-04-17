@@ -70,9 +70,6 @@ def compute_layer_gen_cost(GenImageModl):
         numerator = tf.matmul(features_T, features)
         denominator = (tf.multiply(tf.multiply(n_H, n_W), n_C))
 
-        # print(numerator)
-        # print(tf.cast(denominator, tf.float32))
-
         J_gen_Layer[layer] = tf.divide(tf.cast(numerator, tf.float32), tf.cast(denominator, tf.float32))
 
     return J_gen_Layer

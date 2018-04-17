@@ -101,19 +101,7 @@ def optimize(ContentImages, StyleImage, CheckPoint, TestImage, chkpnt_iterations
             sess.run(tf.global_variables_initializer())
         
             delta_time = 0
-            batch = 0
-
-            X_IContent = np.zeros(XContentInputShape, dtype=np.float32)
-
-            curr = batch * batch_size
-            step = curr + batch_size
-
-            for i, path in enumerate(ContentImages[curr:step]):
-                # print('file added: ' + str(path))
-                X_IContent[i] = getresizeImage(path)
-
-            assert X_IContent.shape == XContentInputShape
-
+            chpnt = 0
 
             print('--------------------------------------------------------------------------------------------')
             print('training started... %s files will be loaded.' %batch_size)
@@ -126,7 +114,17 @@ def optimize(ContentImages, StyleImage, CheckPoint, TestImage, chkpnt_iterations
         
                     start_time = time.time()
 
-                    # train_step.run(feed_dict={XContent:X_IContent})
+                    curr = iterations * batch_size
+                    step = curr + batch_size
+                    
+                    X_IContent = np.zeros(XContentInputShape, dtype=np.float32)
+
+                    for i, path in enumerate(ContentImages[curr:step]):
+                        # print('file added: ' + str(path))
+                        X_IContent[i] = getresizeImage(path)
+
+                    assert X_IContent.shape == XContentInputShape
+
                     sess.run(train_step, feed_dict={XContent:X_IContent})
         
                     end_time = time.time()
@@ -154,34 +152,26 @@ def optimize(ContentImages, StyleImage, CheckPoint, TestImage, chkpnt_iterations
 
                         print('%s - Processing time %s' %(datetime.now(), delta_time))
         
-                        print('Iteration: %d, J: %s, J_style: %s, J_content: %s, J_tv: %s' % (iterations, oJ, oJ_style, oJ_content, oJ_tv))
+                        print('Iteration: %d, epoch: %d, J: %s, J_style: %s, J_content: %s, J_tv: %s' % (iterations, epoch, oJ, oJ_style, oJ_content, oJ_tv))
         
                         delta_time = 0
 
-                        batch += 1
+                    if (iterations > 0 and iterations % chkpnt_iterations == 0) or ((epoch == epochs - 1) and (epochs > 2)):
+                    	
+                    	chpnt += chkpnt_iterations
+                    	
+                    	print('Saving Noise Model...')
+                    	saver = tf.train.Saver()
+                    	saver.save(sess, CheckPoint + 'NoiseModel-' + str(chpnt) + '-.ckpt')
+                    	print('Noise model saved..' + ' ' + 'NoiseModel-' + str(chpnt) + '-.ckpt')
+                    	
+                    	print('Time Now: %s' %datetime.now())
+                    	
+                    	# some rest to the system
+                    	time.sleep(500)
+                    	
+                    	yield (CheckPoint, TestImage, chpnt)
 
-                        curr = batch * batch_size
-                        step = curr + batch_size
-
-                        for i, path in enumerate(ContentImages[curr:step]):
-                            # print('file added: ' + str(path))
-                            X_IContent[i] = getresizeImage(path)
-
-                        assert X_IContent.shape == XContentInputShape
-
-                    if iterations > 0 and iterations % chkpnt_iterations == 0:
-
-                        print('Saving Noise Model...')
-                        saver = tf.train.Saver()
-                        saver.save(sess, CheckPoint + 'NoiseModel-' + str(iterations) + '-.ckpt')
-                        print('Noise model saved..' + ' ' + 'NoiseModel-' + str(iterations) + '-.ckpt')
-
-                        print('Time Now: %s' %datetime.now())
-
-                        # some rest to the system
-                        time.sleep(1)
-
-                        yield (CheckPoint, TestImage, iterations)
 
 
 
@@ -283,3 +273,4 @@ def generate(ContentImage, CheckPoint, Output, CamURL):
         # When everything done, release the capture
         cap.release()
         cv2.destroyAllWindows()
+

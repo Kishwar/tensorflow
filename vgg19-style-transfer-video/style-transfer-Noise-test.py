@@ -56,4 +56,50 @@ if __name__ == "__main__":
     # kwargs
     kwargs = {}
 
+
+    rser()
+    parser.add_argument('--chkpnt', type=str,
+                        dest='checkpoint_dir',
+                        help='dir or .ckpt file to load checkpoint from',
+                        metavar='CHECKPOINT', required=True)
+
+    parser.add_argument('--cam-url', type=str,
+                        dest='cam_url',help='URL for the camera, 0 for built-in camera, 255 for image',
+                        metavar='IN_PATH', required=True)
+
+    parser.add_argument('--in-path', type=str,
+                        dest='in_path',help='Input file path when cam-url is 255',
+                        metavar='IN_PATH')
+
+    parser.add_argument('--out-path', type=str,
+                        dest='out_path', help='output directory path when cam-url is 255', metavar='OUT_PATH')
+
+    return parser
+
+if __name__ == "__main__":
+    parser = build_parser()
+    Args = parser.parse_args()
+    if Args.cam_url == '255':
+
+        # args
+        args = [
+            Args.in_path,
+            Args.checkpoint_dir,
+            Args.out_path,
+            Args.cam_url
+               ]
+    else:
+        Args.in_path = None
+        Args.out_path = None
+
+        args = [
+            Args.in_path,
+            Args.checkpoint_dir,
+            Args.out_path,
+            Args.cam_url
+               ]
+
+    # kwargs
+    kwargs = {}
+    
     generate(*args, **kwargs)

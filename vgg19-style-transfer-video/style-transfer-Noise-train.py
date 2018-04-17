@@ -105,10 +105,10 @@ if __name__ == "__main__":
         "batch_size": Args.batch_size
     }
 
-    for RChkpnt, RTestImage, Riterations in optimize(*args, **kwargs):
+    for RChkpnt, RTestImage, Rchpnt in optimize(*args, **kwargs):
 
         print('Testing input test image...')
 
-        generate(RTestImage, RChkpnt, RChkpnt + 'Output-' + str(Riterations) + '-NoiseModel.jpg', '255')
+        generate(RTestImage, RChkpnt, RChkpnt + 'Output-' + str(Rchpnt) + '-NoiseModel.jpg', '255')
 
-        print('Input image tested, Please check ' + RChkpnt + 'Output-' + str(Riterations) + '-NoiseModel.jpg')
+        print('Input image tested, Please check ' + RChkpnt + 'Output-' + str(Rchpnt) + '-NoiseModel.jpg')
