@@ -102,18 +102,6 @@ def optimize(ContentImages, StyleImage, CheckPoint, TestImage, chkpnt_iterations
         
             delta_time = 0
             chpnt = 0
-            batch = 0
-
-            X_IContent = np.zeros(XContentInputShape, dtype=np.float32)
-
-            curr = batch * batch_size
-            step = curr + batch_size
-
-            for i, path in enumerate(ContentImages[curr:step]):
-                # print('file added: ' + str(path))
-                X_IContent[i] = getresizeImage(path)
-
-            assert X_IContent.shape == XContentInputShape
 
             print('--------------------------------------------------------------------------------------------')
             print('training started... %s files will be loaded.' %batch_size)
@@ -125,6 +113,17 @@ def optimize(ContentImages, StyleImage, CheckPoint, TestImage, chkpnt_iterations
                 while iterations * batch_size < len(ContentImages):
         
                     start_time = time.time()
+
+                    curr = iterations * batch_size
+                    step = curr + batch_size
+                    
+                    X_IContent = np.zeros(XContentInputShape, dtype=np.float32)
+
+                    for i, path in enumerate(ContentImages[curr:step]):
+                        # print('file added: ' + str(path))
+                        X_IContent[i] = getresizeImage(path)
+
+                    assert X_IContent.shape == XContentInputShape
 
                     sess.run(train_step, feed_dict={XContent:X_IContent})
         
@@ -157,39 +156,21 @@ def optimize(ContentImages, StyleImage, CheckPoint, TestImage, chkpnt_iterations
         
                         delta_time = 0
 
-                        batch += 1
-
-                        curr = batch * batch_size
-                        step = curr + batch_size
-                        
-                        if(step > len(ContentImages)):
-                        	
-                        	batch = 0
-                        	
-                        	curr = batch * batch_size
-                        	step = curr + batch_size
-
-                        for i, path in enumerate(ContentImages[curr:step]):
-                            # print('file added: ' + str(path))
-                            X_IContent[i] = getresizeImage(path)
-
-                        assert X_IContent.shape == XContentInputShape
-
                     if (iterations > 0 and iterations % chkpnt_iterations == 0) or ((epoch == epochs - 1) and (epochs > 2)):
-                    
+                    	
                     	chpnt += chkpnt_iterations
-
-                        print('Saving Noise Model...')
-                        saver = tf.train.Saver()
-                        saver.save(sess, CheckPoint + 'NoiseModel-' + str(chpnt) + '-.ckpt')
-                        print('Noise model saved..' + ' ' + 'NoiseModel-' + str(chpnt) + '-.ckpt')
-
-                        print('Time Now: %s' %datetime.now())
-
-                        # some rest to the system
-                        time.sleep(500)
-
-                        yield (CheckPoint, TestImage, iterations)
+                    	
+                    	print('Saving Noise Model...')
+                    	saver = tf.train.Saver()
+                    	saver.save(sess, CheckPoint + 'NoiseModel-' + str(chpnt) + '-.ckpt')
+                    	print('Noise model saved..' + ' ' + 'NoiseModel-' + str(chpnt) + '-.ckpt')
+                    	
+                    	print('Time Now: %s' %datetime.now())
+                    	
+                    	# some rest to the system
+                    	time.sleep(500)
+                    	
+                    	yield (CheckPoint, TestImage, iterations)
 
 
 
