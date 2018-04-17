@@ -13,7 +13,7 @@ from datetime import datetime
 import cv2
 
 def optimize(ContentImages, StyleImage, CheckPoint, TestImage, chkpnt_iterations, content_weight, style_weight,
-             tv_weight, vgg_path, epochs=4, print_iterations=4, learning_rate=1e1, batch_size=16):
+             tv_weight, vgg_path, epochs=4, print_iterations=4, learning_rate=1e-3, batch_size=16):
 
     mod = len(ContentImages) % batch_size
     if mod > 0:
@@ -102,7 +102,7 @@ def optimize(ContentImages, StyleImage, CheckPoint, TestImage, chkpnt_iterations
         
             delta_time = 0
             chpnt = 0
-
+            
             print('--------------------------------------------------------------------------------------------')
             print('training started... %s files will be loaded.' %batch_size)
         
@@ -133,10 +133,10 @@ def optimize(ContentImages, StyleImage, CheckPoint, TestImage, chkpnt_iterations
         
                     iterations += 1
         
-                    if len(ContentImages) < 500:  # why 500, I don't know..
+                    if len(ContentImages) < 16:  # why 16, I don't know..
                         printIt = ((epoch % print_iterations == 0) or (epoch % chkpnt_iterations == 0)) and (epoch > 0)
                     else:
-                        printIt = (iterations % print_iterations == 0) or (epoch % chkpnt_iterations == 0) and (epoch > 0)
+                        printIt = (iterations % print_iterations == 0)
         
                     if printIt or ((epoch == epochs - 1) and (epochs > 2)):
         
@@ -149,14 +149,19 @@ def optimize(ContentImages, StyleImage, CheckPoint, TestImage, chkpnt_iterations
                         end_time = time.time()
         
                         delta_time += (end_time - start_time)
+                        
+                        # -------------- Expected Finish Time --------------
+                        perCen = (print_iterations * batch_size) / len(ContentImages) * 100
+                        EndT = (((delta_time * 100) / perCen) + ((len(ContentImages) / (print_iterations * batch_size)) * SYSTEM_SLEEP)) * epochs
+                        # --------------------------------------------------
 
-                        print('%s - Processing time %s' %(datetime.now(), delta_time))
+                        print('%s - Processing time %s - Expected End: %s' %(datetime.now(), delta_time, EndT))
         
                         print('Iteration: %d, epoch: %d, J: %s, J_style: %s, J_content: %s, J_tv: %s' % (iterations, epoch, oJ, oJ_style, oJ_content, oJ_tv))
         
                         delta_time = 0
 
-                    if (iterations > 0 and iterations % chkpnt_iterations == 0) or ((epoch == epochs - 1) and (epochs > 2)):
+                    if (iterations > 0 and iterations % chkpnt_iterations == 0) or (step > (len(ContentImages)-4)):
                     	
                     	chpnt += chkpnt_iterations
                     	
@@ -168,12 +173,9 @@ def optimize(ContentImages, StyleImage, CheckPoint, TestImage, chkpnt_iterations
                     	print('Time Now: %s' %datetime.now())
                     	
                     	# some rest to the system
-                    	time.sleep(500)
+                    	time.sleep(SYSTEM_SLEEP)
                     	
                     	yield (CheckPoint, TestImage, chpnt)
-
-
-
 
 
 def generate(ContentImage, CheckPoint, Output, CamURL):
