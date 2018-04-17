@@ -15,6 +15,9 @@ import functools
 def load_mat_file(file):
     return scipy.io.loadmat(file)
 
+def readimage(path):
+    return scipy.misc.imread(path, mode='RGB')
+    
 def resizeImage(image):
     return scipy.misc.imresize(image, (IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS))
 
@@ -138,7 +141,7 @@ def Denormalize(image):
     """
 
     # Substract the mean to match the expected input
-    image = image + MEANS
+    image = tf.add(image, MEANS)
 
     return image
 
@@ -156,11 +159,8 @@ def generate_noise_image(content_image, noise_ratio = NOISE_RATIO):
 
 def save_image(path, image):
 
-    # Un-normalize the image so that it looks good
-    image = image + MEANS
-
     # Clip and Save the image
-    image = np.clip(image[0], 0, 255).astype('uint8')
+    image = np.clip(image[0], 0, 255).astype(np.uint8)
 
     scipy.misc.imsave(path, image)
 

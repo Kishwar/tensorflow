@@ -9,10 +9,16 @@ from vgg19Model import *
 from noiseModel import *
 import time
 import numpy as np
+from datetime import datetime
 import cv2
 
-def optimize(ContentImages, StyleImage, CheckPoint, chkpnt_epochs, content_weight, style_weight,
-             tv_weight, vgg_path, epochs=4, print_iterations=4, learning_rate=1e1, batch_size=128):
+def optimize(ContentImages, StyleImage, CheckPoint, TestImage, chkpnt_iterations, content_weight, style_weight,
+             tv_weight, vgg_path, epochs=4, print_iterations=4, learning_rate=1e1, batch_size=16):
+
+    mod = len(ContentImages) % batch_size
+    if mod > 0:
+        print("Train set has been trimmed slightly..")
+        ContentImages = ContentImages[:-mod]
 
     print('--------------------------------------------------------------------------------------------')
     print('content weight=%d, style weight=%d, tv weight=%d' %(content_weight, style_weight, tv_weight))
@@ -95,34 +101,31 @@ def optimize(ContentImages, StyleImage, CheckPoint, chkpnt_epochs, content_weigh
             sess.run(tf.global_variables_initializer())
         
             delta_time = 0
+            batch = 0
 
-            Updated = False
-        
+            X_IContent = np.zeros(XContentInputShape, dtype=np.float32)
+
+            curr = batch * batch_size
+            step = curr + batch_size
+
+            for i, path in enumerate(ContentImages[curr:step]):
+                # print('file added: ' + str(path))
+                X_IContent[i] = getresizeImage(path)
+
+            assert X_IContent.shape == XContentInputShape
+
+
             print('--------------------------------------------------------------------------------------------')
             print('training started... %s files will be loaded.' %batch_size)
         
             for epoch in range(epochs):
         
                 iterations = 0
+
                 while iterations * batch_size < len(ContentImages):
         
                     start_time = time.time()
 
-                    if ((len(ContentImages)  == batch_size) and (Updated ==False)):
-                        X_IContent = np.zeros(XContentInputShape, dtype=np.float32)
-        
-                        curr = iterations * batch_size
-                        step = curr + batch_size
-        
-                        for i, path in enumerate(ContentImages[curr:step]):
-                            X_IContent[i] = getresizeImage(path)
-        
-                        assert X_IContent.shape == XContentInputShape
-
-                        Updated = True
-
-                        print('X_IContent Updated...')
-        
                     # train_step.run(feed_dict={XContent:X_IContent})
                     sess.run(train_step, feed_dict={XContent:X_IContent})
         
@@ -133,9 +136,9 @@ def optimize(ContentImages, StyleImage, CheckPoint, chkpnt_epochs, content_weigh
                     iterations += 1
         
                     if len(ContentImages) < 500:  # why 500, I don't know..
-                        printIt = ((epoch % print_iterations == 0) or (epoch % chkpnt_epochs == 0)) and (epoch > 0)
+                        printIt = ((epoch % print_iterations == 0) or (epoch % chkpnt_iterations == 0)) and (epoch > 0)
                     else:
-                        printIt = (iterations % print_iterations == 0) or (epoch % chkpnt_epochs == 0) and (epoch > 0)
+                        printIt = (iterations % print_iterations == 0) or (epoch % chkpnt_iterations == 0) and (epoch > 0)
         
                     if printIt or ((epoch == epochs - 1) and (epochs > 2)):
         
@@ -148,28 +151,82 @@ def optimize(ContentImages, StyleImage, CheckPoint, chkpnt_epochs, content_weigh
                         end_time = time.time()
         
                         delta_time += (end_time - start_time)
+
+                        print('%s - Processing time %s' %(datetime.now(), delta_time))
         
-                        # print('Processing time %s for %s Epoch(s). %d%% finished.' %(delta_time, print_iterations,
-                        #                                                             int(((iterations * batch_size)/len(ContentImages))*100)))
-                        print('Processing time %s' %delta_time)
-        
-                        print('Iteration: %d, J: %s, J_style: %s, J_content: %s, J_tv: %s' % (epoch, oJ, oJ_style, oJ_content, oJ_tv))
+                        print('Iteration: %d, J: %s, J_style: %s, J_content: %s, J_tv: %s' % (iterations, oJ, oJ_style, oJ_content, oJ_tv))
         
                         delta_time = 0
-        
-                if epoch > 0 and epoch % chkpnt_epochs == 0:
-                    print('Saving Noise Model...')
-                    saver = tf.train.Saver()
-                    saver.save(sess, CheckPoint + 'NoiseModel-' + str(epoch) + '-.ckpt')
-                    print('Noise model saved..' + ' ' + 'NoiseModel-' + str(epoch) + '-.ckpt')
+
+                        batch += 1
+
+                        curr = batch * batch_size
+                        step = curr + batch_size
+
+                        for i, path in enumerate(ContentImages[curr:step]):
+                            # print('file added: ' + str(path))
+                            X_IContent[i] = getresizeImage(path)
+
+                        assert X_IContent.shape == XContentInputShape
+
+                    if iterations > 0 and iterations % chkpnt_iterations == 0:
+
+                        print('Saving Noise Model...')
+                        saver = tf.train.Saver()
+                        saver.save(sess, CheckPoint + 'NoiseModel-' + str(iterations) + '-.ckpt')
+                        print('Noise model saved..' + ' ' + 'NoiseModel-' + str(iterations) + '-.ckpt')
+
+                        print('Time Now: %s' %datetime.now())
+
+                        # some rest to the system
+                        time.sleep(1)
+
+                        yield (CheckPoint, TestImage, iterations)
+
+
 
 
 def generate(ContentImage, CheckPoint, Output, CamURL):
 
     # Check if we have cam or image as input
     if CamURL == '255':
-        # TODO
-        print('TODO')
+    
+        NewGraph = tf.Graph()
+        
+        soft_config = tf.ConfigProto(allow_soft_placement=True)
+        soft_config.gpu_options.allow_growth = True
+        
+        with NewGraph.as_default(), NewGraph.device("/cpu:0"), \
+            tf.Session(config=soft_config) as sess:
+            
+            ContentImageArray = readimage(ContentImage)
+
+            # Create shape of (Batch Size, IH, IW, IC)
+            XContentInputShape = (1,) + ContentImageArray.shape
+
+            # lets have the tensor for Content Image(s)
+            XContentTest = tf.placeholder(tf.float32, shape=XContentInputShape, name="XContentTest")
+
+            Testpreds, _ = noiseModel(XContentTest)
+
+            saver = tf.train.Saver()
+
+            K = np.zeros(XContentInputShape, dtype=np.float32)
+            K[0] = ContentImageArray
+
+            if os.path.isdir(CheckPoint):
+                ckpt = tf.train.get_checkpoint_state(CheckPoint)
+                if ckpt and ckpt.model_checkpoint_path:
+                    saver.restore(sess, ckpt.model_checkpoint_path)
+                else:
+                    raise Exception("No checkpoint found...")
+            else:
+                saver.restore(sess, CheckPoint)
+
+            _Testpreds = sess.run(Testpreds, feed_dict={XContentTest: K})
+
+            save_image(Output, _Testpreds)
+
     else:
         # get camera handle
         cap = cv2.VideoCapture(CamURL)
@@ -197,7 +254,7 @@ def generate(ContentImage, CheckPoint, Output, CamURL):
                     # lets have the tensor for Content Image(s)
                     XContent = tf.placeholder(tf.float32, shape=XContentInputShape, name="XContent")
             
-                    preds, _ = noiseModel(XContent/255.0)
+                    preds, _ = noiseModel(XContent)
             
                     saver = tf.train.Saver()
             
@@ -216,10 +273,10 @@ def generate(ContentImage, CheckPoint, Output, CamURL):
                     _pred = sess.run(preds, feed_dict={XContent: X})
             
                     # Display the resulting frame
-                    # cv2.imshow('styled', get_video_image(_pred))
+                    cv2.imshow('styled', get_video_image(_pred))
             
                     # Display the frame
-                    # cv2.imshow('frame', frame)
+                    cv2.imshow('frame', frame)
             
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break

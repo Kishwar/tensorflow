@@ -23,13 +23,17 @@ def build_parser():
                         dest='checkpoint', help='path to store noise model (DIR)',
                         metavar='CHECKPOINT', required=True)
 
+    parser.add_argument('--test-image', type=str,
+                        dest='testimage', help='Image to test system after check point',
+                        metavar='TESTIMAGE', required=True)
+
     parser.add_argument('--print-iterations', type=int,
                         dest='print_iterations', help='print on terminal after these number of iterations',
                         metavar='LOSS_PRINT_ITERATIONS', default=PRINT_ITERATIONS)
 
-    parser.add_argument('--chkpnt-epochs', type=int,
-                        dest='chkpnt_epochs', help='create check point after these many epochs, default = 1',
-                        metavar='CHECKPOINT_EPOCHS', default=CHECKPOINT_EPOCH)
+    parser.add_argument('--chkpnt-iterations', type=int,
+                        dest='chkpnt_iterations', help='create check point after these many iterations, default = 1',
+                        metavar='CHECKPOINT_ITERATIONS', default=CHECKPOINT_ITERATIONS)
 
     parser.add_argument('--epochs', type=int,
                         dest='epochs', help='num epochs',
@@ -85,7 +89,8 @@ if __name__ == "__main__":
         ContentImages,
         StyleImage,
         Args.checkpoint,
-        Args.chkpnt_epochs,
+        Args.testimage,
+        Args.chkpnt_iterations,
         Args.content_weight,
         Args.style_weight,
         Args.tv_weight,
@@ -100,4 +105,10 @@ if __name__ == "__main__":
         "batch_size": Args.batch_size
     }
 
-    optimize(*args, **kwargs)
+    for RChkpnt, RTestImage, Riterations in optimize(*args, **kwargs):
+
+        print('Testing input test image...')
+
+        generate(RTestImage, RChkpnt, RChkpnt + 'Output-' + str(Riterations) + '-NoiseModel.jpg', '255')
+
+        print('Input image tested, Please check ' + RChkpnt + 'Output-' + str(Riterations) + '-NoiseModel.jpg')
