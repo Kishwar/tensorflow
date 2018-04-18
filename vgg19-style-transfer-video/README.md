@@ -14,9 +14,9 @@ python style-transfer-Noise-train.py --style imgstyle\udnie.jpg --chkpnt chkpnt_
 python style-transfer-Noise-test.py --chkpnt chkpnt_udnie_batch_16\ --cam-url 255 --in-path testImage\ContentImage.jpg --out-path output\Output.jpg
 ```
 <p align = 'center'>
-<img src = 'vgg19-style-transfer-video/imgstyle/udnie.jpg' height = '246px'>
-<img src = 'vgg19-style-transfer-video/testImage/ContentImage.jpg' height = '246px'>
-<a href = 'vgg19-style-transfer-video/output/Output.jpg'><img src = 'vgg19-style-transfer-video/output/Output.jpg' width = '627px'></a>
+<img src = 'imgstyle/udnie.jpg' height = '246px'>
+<img src = 'testImage/ContentImage.jpg' height = '246px'>
+<a href = 'output/Output.jpg'><img src = 'output/Output.jpg' width = '627px'></a>
 </p>
 
    ### * Testing (Video) - Using IP Camera
