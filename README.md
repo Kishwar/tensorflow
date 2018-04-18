@@ -29,7 +29,7 @@ python style-transfer-main.py  --style ./imgstyle/StyleImage.jpg --content ./img
 <a href = 'vgg19-style-transfer/output/out.jpg'><img src = 'vgg19-style-transfer/output/out.jpg' width = '627px'></a>
 </p>
 
-## VGG19-STYLE-TRANSFER FOR VIDEO (Python 3.5, Tensorflow LATEST) - Expected to be finished 30/04/2018
+## VGG19-STYLE-TRANSFER FOR VIDEO (Python 3.5, Tensorflow LATEST)
    * https://arxiv.org/abs/1708.04538 <br />
    * Download model weights from http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat <br />
    * Download COCO training images from http://msvocds.blob.core.windows.net/coco2014/train2014.zip <br />
@@ -50,9 +50,14 @@ python style-transfer-Noise-test.py --chkpnt chkpnt_udnie_batch_16\ --cam-url 25
 <a href = 'vgg19-style-transfer-video/output/Output.jpg'><img src = 'vgg19-style-transfer-video/output/Output.jpg' width = '627px'></a>
 </p>
 
-   ### * Testing (Video) - Using IP Camera App on Mobile
+   ### * Testing (Video) - Using IP Camera
 ```
 python style-transfer-Noise-test.py --chkpnt chkpnt_udnie_batch_16\ --cam-url http://192.168.0.3:8080/video/
+```
+
+   ### * Testing (Video) - Using Laptop Camera
+```
+python style-transfer-Noise-test.py --chkpnt chkpnt_udnie_batch_16\ --cam-url 0
 ```
 
 ## STYLE-TRANSFER FOR MUSIC (Python 3.5, Tensorflow LATEST) - Expected to be finished 30/06/2018
