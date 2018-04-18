@@ -238,10 +238,8 @@ def generate(ContentImage, CheckPoint, Output, CamURL):
                     # Capture frame-by-frame
                     ret, frame = cap.read()
     
-                    frame = resizeImage(frame)
-    
                     # Create shape of (Batch Size, IH, IW, IC)
-                    XContentInputShape = (1, IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS)
+                    XContentInputShape = (1,) + frame.shape
             
                     # lets have the tensor for Content Image(s)
                     XContent = tf.placeholder(tf.float32, shape=XContentInputShape, name="XContent")
