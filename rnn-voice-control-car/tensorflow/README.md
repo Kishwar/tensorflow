@@ -1,4 +1,4 @@
-## VOICE CONTROLLED CAR (Python 3.5, Tensorflow LATEST, Keras LATEST)
+## VOICE CONTROLLED CAR (Python 3.5, Tensorflow LATEST)
   * UNDER DEVELOPMENT
     - Commands
       - Stop
