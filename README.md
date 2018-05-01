@@ -60,6 +60,15 @@ python style-transfer-Noise-test.py --chkpnt chkpnt_udnie_batch_16\ --cam-url ht
 python style-transfer-Noise-test.py --chkpnt chkpnt_udnie_batch_16\ --cam-url 0
 ```
 
+## TRIGGER WORD LILLY (Python 3.5, Tensorflow LATEST)
+
+- Code generates required training data from given positive, negative and background samples.
+- Total number of 2000 samples are generated
+- MODEL
+<p align = 'center'>
+<img src = 'rnn-trigger-word-lilly/keras/raw_data/Kerasmodel.png'>
+</p>
+
 ## STYLE-TRANSFER FOR MUSIC (Python 3.5, Tensorflow LATEST) - Expected to be finished 30/06/2018
    - NEXT IN QUEUE..
 
