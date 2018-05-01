@@ -6,6 +6,8 @@ import random
 import sys
 import IPython
 from scipy.io import wavfile 
+#import matplotlib
+#import matplotlib.pyplot as plt
 
 '''
 # Data downloaded from http://download.tensorflow.org/data/speech_commands_v0.01.tar.gz
@@ -39,9 +41,8 @@ print(outPath)
 
 Ty = 1375
 
+'''
 # From Audio recordings to Spectrograms
-
-
 def graph_spectrogram(wav_file):
     rate, data = wavfile.read(wav_file)  # rate=44100 - sampling rate (https://en.wikipedia.org/wiki/44,100_Hz)
     
@@ -57,30 +58,18 @@ def graph_spectrogram(wav_file):
     
     # print('file duration in seconds %s' %(len(data)/rate))
     return pxx
-
+'''    
+    
 # find random time segment
 def get_random_time_segment(seg_ms):
-    
     seg_start = np.random.randint(low=0, high=3000-seg_ms)    # low = 0 sec, high = 3 seconds
     seg_end = seg_start + seg_ms - 1
-    
+    #print('end' + str(seg_start))
     return seg_start, seg_end
-    
-# check if segment overlapping
-def is_overlapping(seg_time, prev_segs):
-    
-    seg_start, seg_end = seg_time
-    
-    overlap = False
-    
-    for prev_start, prev_end in prev_segs:
-        if seg_start <= prev_end and seg_end >= prev_start:
-            overlap = True
-            
-    return overlap
+
     
 # method to overlay
-def insert_audio_clip(background, audio_clip, prev_segs):
+def insert_audio_clip(background, audio_clip):
     """
     background     10 sec background noise audio
     audio_clip     clip with positive or negative sample
@@ -95,12 +84,7 @@ def insert_audio_clip(background, audio_clip, prev_segs):
     # get random place time for this clip
     seg_time = get_random_time_segment(seg_ms)
     
-    # check if seg_time overlaps to previous seg, if yes then find another place
-    while is_overlapping(seg_time, prev_segs):
-        seg_time = get_random_time_segment(seg_ms)
-    
-    # append new seg to prev seg
-    prev_segs.append(seg_time)
+    print(seg_time)
     
     # lets overlay
     new_background = background.overlay(audio_clip, position = seg_time[0])
@@ -141,24 +125,14 @@ def create_training_sample(background, positive, idx):
     # initialize ouput vector as zeros
     y = np.zeros((1, Ty))
     
-    # initialize seg times as empty list
-    prev_seg = []
-    
-    # select 0-4 random positive samples
-    nr_of_positve = np.random.randint(0, 5)
-    random_indx = np.random.randint(len(positive), size=nr_of_positve)
-    random_positives = [positive[i] for i in random_indx]
-    
-    # lets overlay this sample over background
-    for random_positive in random_positives:
-        # insert positive sample on background
-        background, seg_time = insert_audio_clip(background, random_positive, prev_seg)
+    # insert positive sample on background
+    background, seg_time = insert_audio_clip(background, positive[0])
         
-        # retreive seg_start and seg_end from seg_time
-        seg_start, seg_end = seg_time
+    # retrieve seg_start and seg_end from seg_time
+    seg_start, seg_end = seg_time
         
-        # insert ones in y
-        y = insert_ones(y, seg_end)
+    # insert ones in y
+    y = insert_ones(y, seg_end)  
     
     # standarize the volume of the audio clip
     backgound = match_target_amp(background, -20.0)
@@ -170,7 +144,7 @@ def create_training_sample(background, positive, idx):
     background = backgound.export(name, format="wav")
     
     # get spectrogram
-    x = graph_spectrogram(name)
+    x = 0 # graph_spectrogram(name)
         
     return x, y
 
@@ -178,13 +152,27 @@ def create_training_sample(background, positive, idx):
 # LETS GENERATE KEY WORD 'LEFT' SAMPLE WAV FILES
 # ----------------------------------------------
 if __name__ == "__main__":
+    background = []
+    positive = []
     
-    '''
     # read all noise files in an array
     for file in os.listdir(noise):
         if file.endswith("wav"):
-            print(noise + file)
-            bak = AudioSegment.from_wav(r"D:\rnn-voice-control-car-data\training_data\noise\\gnoise-0.wav")
+            bak = AudioSegment.from_wav(noise + file)
             background.append(bak)
-    '''
-    AudioSegment.from_wav(r"D:\rnn-voice-control-car-data\training_data\noise\\gnoise-1.wav")
+    
+    fileIdx = 0
+    for i in range(len(background)):		
+    	count = 0       
+    	for file in os.listdir(inPath):
+    		if file.endswith("wav"):
+    			count += 1
+    	for file in os.listdir(inPath):
+    		if file.endswith("wav"):
+    			if(count % 5 == 0):
+    				LeftX, LeftY = create_training_sample(background[i], positive, fileIdx)
+    				positive = []
+    				fileIdx += 1
+    			pos = AudioSegment.from_wav(inPath + file)
+    			positive.append(pos)
+    			count -= 1
