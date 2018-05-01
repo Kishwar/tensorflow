@@ -41,3 +41,4 @@ vgg19-style-transfer/pre_trained_model/imagenet-vgg-verydeep-19.mat
 
 >>>>>>> 19b349dbe8525a137f2eb5b644186cdd884c5acf
 vgg19-style-transfer-video/chkpnt/checkpoint
+*.npy
