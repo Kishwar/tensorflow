@@ -64,6 +64,7 @@ python style-transfer-Noise-test.py --chkpnt chkpnt_udnie_batch_16\ --cam-url 0
 
 - Code generates required training data from given positive, negative and background samples.
 - Total number of 2000 samples are generated
+- Model output at 88% accuracy: <b> rnn-trigger-word-lilly/keras/raw_data/chime/chime_output.wav </b>
 - MODEL
 <p align = 'center'>
 <img src = 'rnn-trigger-word-lilly/keras/raw_data/Kerasmodel.png'>
