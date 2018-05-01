@@ -23,7 +23,7 @@
         <entry file="file://$PROJECT_DIR$/utils.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="2584">
-              <caret line="156" column="14" selection-start-line="156" selection-start-column="4" selection-end-line="156" selection-end-column="14" />
+              <caret line="156" column="14" selection-start-line="156" selection-start-column="14" selection-end-line="156" selection-end-column="14" />
               <folding>
                 <element signature="e#147#162#0" expanded="true" />
               </folding>
@@ -34,7 +34,7 @@
       <file leaf-file-name="style-transfer-Noise-train.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/style-transfer-Noise-train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="230">
+            <state relative-caret-position="1343">
               <caret line="80" column="53" selection-start-line="80" selection-start-column="53" selection-end-line="80" selection-end-column="53" />
             </state>
           </provider>
@@ -43,8 +43,8 @@
       <file leaf-file-name="optimize.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/optimize.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="734">
-              <caret line="156" column="104" selection-start-line="156" selection-start-column="94" selection-end-line="156" selection-end-column="104" />
+            <state relative-caret-position="1040">
+              <caret line="159" column="104" selection-start-line="159" selection-start-column="104" selection-end-line="159" selection-end-column="104" />
               <folding>
                 <element signature="e#137#161#0" expanded="true" />
               </folding>
@@ -65,7 +65,7 @@
         <entry file="file://$PROJECT_DIR$/constants.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="527">
-              <caret line="31" column="21" selection-start-line="31" selection-start-column="21" selection-end-line="31" selection-end-column="21" />
+              <caret line="32" column="21" selection-start-line="32" selection-start-column="21" selection-end-line="32" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -73,7 +73,7 @@
       <file leaf-file-name="noiseModel.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/noiseModel.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="850">
+            <state relative-caret-position="2771">
               <caret line="164" selection-start-line="164" selection-end-line="164" />
               <folding>
                 <element signature="e#137#160#0" expanded="true" />
@@ -85,7 +85,7 @@
       <file leaf-file-name="vgg19Model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/vgg19Model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="604">
+            <state relative-caret-position="2992">
               <caret line="178" column="42" selection-start-line="178" selection-start-column="42" selection-end-line="178" selection-end-column="42" />
             </state>
           </provider>
@@ -124,7 +124,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="179" />
     <option name="y" value="38" />
     <option name="width" value="1216" />
@@ -135,7 +135,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -147,6 +146,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -303,10 +303,9 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1328125" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.0828125" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" weight="0.32943678" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
@@ -667,7 +666,7 @@
     <entry file="file://$PROJECT_DIR$/utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2584">
-          <caret line="156" column="14" selection-start-line="156" selection-start-column="4" selection-end-line="156" selection-end-column="14" />
+          <caret line="156" column="14" selection-start-line="156" selection-start-column="14" selection-end-line="156" selection-end-column="14" />
           <folding>
             <element signature="e#147#162#0" expanded="true" />
           </folding>
@@ -676,7 +675,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/noiseModel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="850">
+        <state relative-caret-position="2771">
           <caret line="164" selection-start-line="164" selection-end-line="164" />
           <folding>
             <element signature="e#137#160#0" expanded="true" />
@@ -686,7 +685,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/vgg19Model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="604">
+        <state relative-caret-position="2992">
           <caret line="178" column="42" selection-start-line="178" selection-start-column="42" selection-end-line="178" selection-end-column="42" />
         </state>
       </provider>
@@ -701,21 +700,21 @@
     <entry file="file://$PROJECT_DIR$/constants.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="527">
-          <caret line="31" column="21" selection-start-line="31" selection-start-column="21" selection-end-line="31" selection-end-column="21" />
+          <caret line="32" column="21" selection-start-line="32" selection-start-column="21" selection-end-line="32" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/style-transfer-Noise-train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
+        <state relative-caret-position="1343">
           <caret line="80" column="53" selection-start-line="80" selection-start-column="53" selection-end-line="80" selection-end-column="53" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/optimize.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="734">
-          <caret line="156" column="104" selection-start-line="156" selection-start-column="94" selection-end-line="156" selection-end-column="104" />
+        <state relative-caret-position="1040">
+          <caret line="159" column="104" selection-start-line="159" selection-start-column="104" selection-end-line="159" selection-end-column="104" />
           <folding>
             <element signature="e#137#161#0" expanded="true" />
           </folding>

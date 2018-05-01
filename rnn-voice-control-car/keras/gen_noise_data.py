@@ -1,4 +1,6 @@
 from pydub import AudioSegment
+from configparser import ConfigParser
+import os
 
 '''
 # Data downloaded from http://download.tensorflow.org/data/speech_commands_v0.01.tar.gz
@@ -11,8 +13,21 @@ BibTeX @article{speechcommands, title={Speech Commands: A public dataset for sin
 '''
 
 fileIdx = 0
-inPath = r"D:\rnn-voice-control-car-data\training_data\_background_noise_"
-outPath = r"D:\rnn-voice-control-car-data\training_data\_background_noise_\noise"
+
+# instantiate
+config = ConfigParser()
+
+# parse existing file
+config.read('config.ini')
+
+root = config.get('section_path', 'data_path')
+data = config.get('section_path', 'training_data')
+
+inPath = root + config.get('section_path', 'in_noise_path')
+outPath = data + config.get('section_path', 'out_noise_path')
+
+if not os.path.exists(outPath):
+    os.makedirs(outPath)
 
 # from doing_the_dishes.wav
 noise = AudioSegment.from_wav(inPath + r"\doing_the_dishes.wav")
