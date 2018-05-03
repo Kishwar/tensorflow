@@ -6,8 +6,8 @@ import random
 import sys
 import IPython
 from scipy.io import wavfile 
-#import matplotlib
-#import matplotlib.pyplot as plt
+import matplotlib
+import matplotlib.pyplot as plt
 
 '''
 # Data downloaded from http://download.tensorflow.org/data/speech_commands_v0.01.tar.gz
@@ -41,7 +41,7 @@ print(outPath)
 
 Ty = 1375
 
-'''
+
 # From Audio recordings to Spectrograms
 def graph_spectrogram(wav_file):
     rate, data = wavfile.read(wav_file)  # rate=44100 - sampling rate (https://en.wikipedia.org/wiki/44,100_Hz)
@@ -57,8 +57,7 @@ def graph_spectrogram(wav_file):
         pxx, freq, bins, im = plt.specgram(data[:,0], nfft, fs, noverlap=noverlap)
     
     # print('file duration in seconds %s' %(len(data)/rate))
-    return pxx
-'''    
+    return pxx    
     
 # find random time segment
 def get_random_time_segment(seg_ms):
@@ -144,7 +143,7 @@ def create_training_sample(background, positive, idx):
     background = backgound.export(name, format="wav")
     
     # get spectrogram
-    x = 0 # graph_spectrogram(name)
+    x = graph_spectrogram(name)
         
     return x, y
 
@@ -155,6 +154,9 @@ if __name__ == "__main__":
     background = []
     positive = []
     
+    X = []
+    Y = []
+    
     # read all noise files in an array
     for file in os.listdir(noise):
         if file.endswith("wav"):
@@ -162,17 +164,30 @@ if __name__ == "__main__":
             background.append(bak)
     
     fileIdx = 0
+    npIndx = 0
     for i in range(len(background)):		
     	count = 0       
     	for file in os.listdir(inPath):
     		if file.endswith("wav"):
     			count += 1
     	for file in os.listdir(inPath):
-    		if file.endswith("wav"):
-    			if(count % 5 == 0):
-    				LeftX, LeftY = create_training_sample(background[i], positive, fileIdx)
-    				positive = []
-    				fileIdx += 1
-    			pos = AudioSegment.from_wav(inPath + file)
-    			positive.append(pos)
-    			count -= 1
+            if file.endswith("wav"):
+                if(count % 5 == 0):
+                    LeftX, LeftY = create_training_sample(background[i], positive, fileIdx)
+                    positive = []
+                    fileIdx += 1
+                    X.append(LeftX)
+                    Y.append(LeftY)
+                    if(count % 2000 == 0):
+                        X = np.asarray(X)
+                        Y = np.asarray(Y)
+                        np.save(outPath + "np-array\X-" + str(npIndx) + "-.npy", X)
+                        np.save(outPath + "np-array\Y-" + str(npIndx) + "-.npy", Y)
+                        X = []
+                        Y = []
+                        npIndx += 1
+                pos = AudioSegment.from_wav(inPath + file)
+                positive.append(pos)
+                count -= 1
+    X = []
+    Y = []
