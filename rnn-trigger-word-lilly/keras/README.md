@@ -2,7 +2,7 @@
 
 - Code generates required training data from given positive, negative and background samples.
 - Total number of 2000 samples are generated
-- Model output at 88% accuracy: <b> raw_data/chime/chime_output.wav </b>
+- Model output at 97.91% accuracy: <b> raw_data/chime/chime_output.wav </b>
 - Trained model: <b> raw_data/chime/chimModel_loss_0_0715.h5 [loss - 0.0715] </b>
 - MODEL
 <p align = 'center'>
