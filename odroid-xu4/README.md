@@ -11,7 +11,7 @@ To build Tensorflow on Odroid XU4, we will need following hardware.
 - Keyboard and Mouse (Optional)
 
 <p align = 'center'>
-<a href = 'images/hardware.jpg'><img src = 'images/hardware.jpg' width = '627px'></a>
+<img src = 'images/Hardware.jpeg'>
 </p>
 
 ### Step 1: Format SD Card
