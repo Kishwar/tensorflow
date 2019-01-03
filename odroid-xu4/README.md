@@ -270,8 +270,8 @@ Configuration finished
 ```
 Let's start building. <b>It will take really long time.</b>
 ```
-sudo bazel build --config opt --local_resources 1024.0,0.5,0.5 \
---copt=-mfpu=neon-vfpv4 \
+bazel build --config opt --local_resources 1024,6,1 \
+--copt=-mfpu=neon-vfpv4 --jobs 3 \
 --copt=-ftree-vectorize \
 --copt=-funsafe-math-optimizations \
 --copt=-ftree-loop-vectorize \
