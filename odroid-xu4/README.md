@@ -203,3 +203,19 @@ Now come out of bazel direcotry
 ```
 cd ..
 ```
+
+### Step 7: Tensorflow r1.12 (Python 3.6)
+Let's install some pre-requisites
+```
+sudo apt-get install -y libhdf5-dev
+sudo pip3 install keras_applications==1.0.6 --no-deps
+sudo pip3 install keras_preprocessing==1.0.5 --no-deps
+sudo pip3 install h5py==2.8.0
+sudo apt-get install -y openmpi-bin libopenmpi-dev
+```
+Clone Tensorflow and checkout r1.12
+```
+git clone https://github.com/tensorflow/tensorflow.git
+cd tensorflow
+git checkout r1.12
+```
