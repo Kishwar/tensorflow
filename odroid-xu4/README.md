@@ -28,3 +28,17 @@ We will use <b>Balena Etcher</b> to load OS image on SD Card. Balena Etcher is a
 <p align = 'center'>
 <img src = 'images/loadImage.png' height = '320px'>
 </p>
+
+### Step 4: Let's get into the Odroid using SSH
+<p align = 'center'>
+<img src = 'images/ssh.png' height = '320px'>
+</p>
+
+### Step 5: Execute some basic commands required for Odroid XU4
+```
+sudo apt install libnfs11
+sudo apt update
+sudo apt upgrade
+sudo apt dist-upgrade
+sudo reboot
+```
