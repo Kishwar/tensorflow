@@ -139,3 +139,15 @@ Save file and exit.
 ```
 ./compile.sh
 ```
+After build finishes, run following command
+```
+sudo cp output/bazel /usr/local/bin/bazel
+```
+To make sure it's working properly, run ```bazel``` on the command line and verify it prints help text. Note: this may take 10-15 seconds to run, so be patient!
+```
+---
+```
+Now come out of bazel direcotry
+```
+cd ..
+```
