@@ -212,6 +212,7 @@ sudo pip3 install keras_applications==1.0.6 --no-deps
 sudo pip3 install keras_preprocessing==1.0.5 --no-deps
 sudo pip3 install h5py==2.8.0
 sudo apt-get install -y openmpi-bin libopenmpi-dev
+sudo apt install git
 ```
 Clone Tensorflow and checkout r1.12
 ```
