@@ -26,5 +26,5 @@ We can download OS from https://wiki.odroid.com/odroid-c1/os_images/ubuntu/v3.0 
 ### Step 3: Load OS on SD Card
 We will use <b>Balena Etcher</b> to load OS image on SD Card. Balena Etcher is available on http://etcher.io
 <p align = 'center'>
-<img src = 'images/Etcher.png' height = '320px'>
+<img src = 'images/loadImage.png' height = '320px'>
 </p>
