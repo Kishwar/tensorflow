@@ -107,8 +107,35 @@ sudo swapon -a
 ```
 Ok, we have added swap memory. To check run <b>htop</b>. In <b>Swp</b>, you should now have some memory size.
 
-### Step 6.2: Get Bazel
+### Step 6.3: Get Bazel
 ```
 wget https://github.com/bazelbuild/bazel/releases/download/0.15.0/bazel-0.15.0-dist.zip
 unzip -d bazel bazel-0.15.0-dist.zip
+```
+Once it's done downloading and extracting, we can move into the directory to make a few changes:
+```
+cd bazel
+sudo chmod u+w ./* -R
+```
+We need to update Java heap size before building bazel. Edit scripts/bootstrap/compile.sh
+```
+nano scripts/bootstrap/compile.sh
+```
+Update
+```
+  run "${JAVAC}" -classpath "${classpath}" -sourcepath "${sourcepath}" \
+      -d "${output}/classes" -source "$JAVA_VERSION" -target "$JAVA_VERSION" \
+      -encoding UTF-8 "@${paramfile}"
+```
+To
+```
+  run "${JAVAC}" -classpath "${classpath}" -sourcepath "${sourcepath}" \
+      -d "${output}/classes" -source "$JAVA_VERSION" -target "$JAVA_VERSION" \
+      -encoding UTF-8 "@${paramfile}" -J-Xmx500M
+```
+Save file and exit. 
+
+### Step 6.4: Build Bazel
+```
+./compile.sh
 ```
