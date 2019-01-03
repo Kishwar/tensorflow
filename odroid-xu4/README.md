@@ -76,6 +76,23 @@ Copyright (C) 2015 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ```
+To build Bazel, we need JDK 8. Odroid Ubuntu Mate comes with JDK 10. We need to first uninstall it.
+```
+sudo apt purge openjdk-*
+```
+Install JDK 8
+```
+sudo apt install openjdk-8-jdk
+```
+Check java and javac version.
+```
+odroid@odroid:~/Desktop/bazel$ javac -version
+javac 1.8.0_191
+odroid@odroid:~/Desktop/bazel$ java -version
+openjdk version "1.8.0_191"
+OpenJDK Runtime Environment (build 1.8.0_191-8u191-b12-0ubuntu0.18.04.1-b12)
+OpenJDK Client VM (build 25.191-b12, mixed mode)
+```
 
 ### Step 6.2: Adding swap memory
 Install htop to check swap memory attached with Odroid
