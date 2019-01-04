@@ -204,7 +204,27 @@ Now come out of bazel direcotry
 cd ..
 ```
 
-### Step 7: Tensorflow r1.11 (Python 3.6)
+### Step 7: Remove GCC and G++ installed for Bazel and install latest versions
+```
+sudo apt-get purge g++* gcc*
+sudo apt-get purge g++ gcc
+sudo apt-get purge gcc-4.8 g++-4.8
+sudo apt-get install g++ gcc
+
+odroid@odroid:~/Desktop/tensorflow$ gcc --version
+gcc (Ubuntu/Linaro 7.3.0-27ubuntu1~18.04) 7.3.0
+Copyright (C) 2017 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+odroid@odroid:~/Desktop/tensorflow$ g++ --version
+g++ (Ubuntu/Linaro 7.3.0-27ubuntu1~18.04) 7.3.0
+Copyright (C) 2017 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+```
+
+### Step 8: Tensorflow r1.11 (Python 3.6)
 Let's install some pre-requisites
 ```
 sudo apt-get install -y libhdf5-dev
@@ -284,7 +304,7 @@ Preconfigured Bazel build configs. You can use any of the below by adding "--con
 	--config=monolithic  	# Config for mostly static monolithic build.
 Configuration finished
 ```
-Let's start building. <b>It will take really long time. (~7 hours)</b>
+Let's start building. <b>It will take really long time. (~5 hours, 30 minutes)</b>
 ```
 bazel build -c opt --jobs 3 --local_resources 1024,6,1 \
 --copt=-mfpu=neon-vfpv4 --copt=-ftree-vectorize \
@@ -294,3 +314,18 @@ bazel build -c opt --jobs 3 --local_resources 1024,6,1 \
 --copt=-DRASPBERRY_PI --host_copt=-DRASPBERRY_PI \
 --verbose_failures //tensorflow/tools/pip_package:build_pip_package
 ```
+After it finishes
+```
+INFO: Elapsed time: 18853.011s, Critical Path: 1240.91s
+INFO: 5700 processes: 5700 local.
+INFO: Build completed successfully, 6337 total actions
+```
+Let's create wheel file
+```
+bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
+```
+Install it
+```
+sudo pip3 install /tmp/tensorflow_pkg/tensorflow-1.11.0-cp36-cp36m-linux_armv7l.whl
+```
+
