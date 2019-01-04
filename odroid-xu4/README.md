@@ -218,11 +218,12 @@ Clone Tensorflow and checkout r1.12
 ```
 git clone https://github.com/tensorflow/tensorflow.git
 cd tensorflow
-git checkout r1.12
+git checkout r1.11
 ```
 ./configure
 ```
 odroid@odroid:~/Desktop/tensorflow$ ./configure
+Extracting Bazel installation...
 WARNING: --batch mode is deprecated. Please instead explicitly shut down your Bazel server using the command "bazel shutdown".
 You have bazel 0.15.0- (@non-git) installed.
 Please specify the location of python. [Default is /usr/bin/python]: /usr/bin/python3
@@ -233,17 +234,35 @@ Found possible Python library paths:
   /usr/local/lib/python3.6/dist-packages
 Please input the desired Python library path to use.  Default is [/usr/lib/python3/dist-packages]
 
-Do you wish to build TensorFlow with Apache Ignite support? [Y/n]: n
-No Apache Ignite support will be enabled for TensorFlow.
+Do you wish to build TensorFlow with jemalloc as malloc support? [Y/n]: n
+No jemalloc as malloc support will be enabled for TensorFlow.
 
-Do you wish to build TensorFlow with XLA JIT support? [Y/n]: n
+Do you wish to build TensorFlow with Google Cloud Platform support? [Y/n]: n
+No Google Cloud Platform support will be enabled for TensorFlow.
+
+Do you wish to build TensorFlow with Hadoop File System support? [Y/n]: n
+No Hadoop File System support will be enabled for TensorFlow.
+
+Do you wish to build TensorFlow with Amazon AWS Platform support? [Y/n]: n
+No Amazon AWS Platform support will be enabled for TensorFlow.
+
+Do you wish to build TensorFlow with Apache Kafka Platform support? [Y/n]: n
+No Apache Kafka Platform support will be enabled for TensorFlow.
+
+Do you wish to build TensorFlow with XLA JIT support? [y/N]: n
 No XLA JIT support will be enabled for TensorFlow.
+
+Do you wish to build TensorFlow with GDR support? [y/N]: n
+No GDR support will be enabled for TensorFlow.
+
+Do you wish to build TensorFlow with VERBS support? [y/N]: n
+No VERBS support will be enabled for TensorFlow.
+
+Do you wish to build TensorFlow with nGraph support? [y/N]: n
+No nGraph support will be enabled for TensorFlow.
 
 Do you wish to build TensorFlow with OpenCL SYCL support? [y/N]: n
 No OpenCL SYCL support will be enabled for TensorFlow.
-
-Do you wish to build TensorFlow with ROCm support? [y/N]: n
-No ROCm support will be enabled for TensorFlow.
 
 Do you wish to build TensorFlow with CUDA support? [y/N]: n
 No CUDA support will be enabled for TensorFlow.
@@ -263,9 +282,6 @@ Not configuring the WORKSPACE for Android builds.
 Preconfigured Bazel build configs. You can use any of the below by adding "--config=<>" to your build command. See tools/bazel.rc for more details.
 	--config=mkl         	# Build with MKL support.
 	--config=monolithic  	# Config for mostly static monolithic build.
-	--config=gdr         	# Build with GDR support.
-	--config=verbs       	# Build with libverbs support.
-	--config=ngraph      	# Build with Intel nGraph support.
 Configuration finished
 ```
 Let's start building. <b>It will take really long time.</b>
