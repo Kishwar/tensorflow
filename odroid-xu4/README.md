@@ -270,13 +270,11 @@ Configuration finished
 ```
 Let's start building. <b>It will take really long time.</b>
 ```
-bazel build --config opt --local_resources 1024,6,1 \
---copt=-mfpu=neon-vfpv4 --jobs 3 \
---copt=-ftree-vectorize \
+bazel build -c opt --jobs 3 --local_resources 1024,6,1 \
+--copt=-mfpu=neon-vfpv4 --copt=-ftree-vectorize \
 --copt=-funsafe-math-optimizations \
 --copt=-ftree-loop-vectorize \
 --copt=-fomit-frame-pointer \
---copt=-DRASPBERRY_PI \
---host_copt=-DRASPBERRY_PI \
-//tensorflow/tools/pip_package:build_pip_package
+--copt=-DRASPBERRY_PI --host_copt=-DRASPBERRY_PI \
+--verbose_failures //tensorflow/tools/pip_package:build_pip_package
 ```
