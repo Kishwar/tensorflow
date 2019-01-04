@@ -214,7 +214,7 @@ sudo pip3 install h5py==2.8.0
 sudo apt-get install -y openmpi-bin libopenmpi-dev
 sudo apt install git
 ```
-Clone Tensorflow and checkout r1.12
+Clone Tensorflow and checkout r1.11
 ```
 git clone https://github.com/tensorflow/tensorflow.git
 cd tensorflow
