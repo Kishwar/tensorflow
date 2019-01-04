@@ -204,7 +204,7 @@ Now come out of bazel direcotry
 cd ..
 ```
 
-### Step 7: Tensorflow r1.12 (Python 3.6)
+### Step 7: Tensorflow r1.11 (Python 3.6)
 Let's install some pre-requisites
 ```
 sudo apt-get install -y libhdf5-dev
