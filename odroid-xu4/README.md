@@ -284,7 +284,7 @@ Preconfigured Bazel build configs. You can use any of the below by adding "--con
 	--config=monolithic  	# Config for mostly static monolithic build.
 Configuration finished
 ```
-Let's start building. <b>It will take really long time.</b>
+Let's start building. <b>It will take really long time. (~7 hours)</b>
 ```
 bazel build -c opt --jobs 3 --local_resources 1024,6,1 \
 --copt=-mfpu=neon-vfpv4 --copt=-ftree-vectorize \
