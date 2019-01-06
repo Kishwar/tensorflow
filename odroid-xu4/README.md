@@ -230,6 +230,7 @@ Let's install some pre-requisites
 ```
 sudo apt-get install libhdf5-serial-dev
 sudo apt-get install libhdf5-dev
+export CPATH="/usr/include/hdf5/serial/"
 sudo pip3 install keras_applications==1.0.6 --no-deps
 sudo pip3 install keras_preprocessing==1.0.5 --no-deps
 sudo pip3 install h5py==2.8.0
@@ -342,6 +343,7 @@ Let's install some pre-requisites
 ```
 sudo apt-get install libhdf5-serial-dev
 sudo apt-get install libhdf5-dev
+export CPATH="/usr/include/hdf5/serial/"
 sudo pip3 install keras_applications==1.0.6 --no-deps
 sudo pip3 install keras_preprocessing==1.0.5 --no-deps
 sudo pip3 install h5py==2.8.0
