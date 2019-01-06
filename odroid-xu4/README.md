@@ -365,11 +365,8 @@ sudo apt-get install libblas3 liblapack3 liblapack-dev libblas-dev
 sudo apt-get install gfortran
 ```
 After install, we will get <b>warning</b> message when importing <b>tensorflow</b> but it OK.
-```
 
-```
-
-### OPTION 1: Install above whl using Python3.4
+### OPTION 2: Install above whl using Python3.4
 Before we install Python3.4 on Odroid, let's uninstall Python3.6
 ```
 sudo apt purge python3*
@@ -383,8 +380,5 @@ Install Tensorflow
 sudo python3.4 -m pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
 ```
 We should not see any warning now.. 
-```
-
-```
 
 Enjoy Tensorflow on Odroid :)
