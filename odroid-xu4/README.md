@@ -330,25 +330,59 @@ sudo pip3 install /tmp/tensorflow_pkg/tensorflow-1.11.0-cp36-cp36m-linux_armv7l.
 ```
 
 WARNING: With above steps, Tensorflow works fine with Keras but gives ```BUS ERROR``` when used directly. Possible reason for error is memory mis-alignment.
+see https://github.com/tensorflow/tensorflow/issues/15062
 
 RECOMMENDATION: Use steps below for stable version.
 
 # Tensorflow on Odroid XU4 (Stable)
 Download tensorflow from official <b>piwheels</b> website
 ```
-wget https://www.piwheels.org/simple/tensorflow/tensorflow-1.11.0-cp35-none-linux_armv7l.whl
+wget https://www.piwheels.org/simple/tensorflow/tensorflow-1.11.0-cp34-none-linux_armv7l.whl
 ```
-This package is compiled using Python3.5. If we try to install it for Python3.6, we will get following error:
+This package is compiled using Python3.4. If we try to install it for Python3.6, we will get following error:
 ```
+odroid@odroid:~$ sudo python3 -m pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl 
+The directory '/home/odroid/.cache/pip/http' or its parent directory is not owned by the current user and the cache has been disabled. Please check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+The directory '/home/odroid/.cache/pip' or its parent directory is not owned by the current user and caching wheels has been disabled. check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+tensorflow-1.11.0-cp34-none-linux_armv7l.whl is not a supported wheel on this platform.
 ```
-Now we have 2 options. Either we unistall Python3.6 and install Python3.5 or we force wheel file to be installed for Python3.6.
+Now we have 2 options. Either we unistall Python3.6 and install Python3.4 or we force wheel file to be installed for Python3.6.
 
 ### OPTION 1: Install above whl using Python3.6
-After download, rename file tensorflow-1.11.0-cp35-none-linux_armv7l.whl > tensorflow-1.11.0-cp36-none-linux_armv7l.whl
+After download, rename file tensorflow-1.11.0-cp34-none-linux_armv7l.whl > tensorflow-1.11.0-cp36-none-linux_armv7l.whl
 ```
-mv tensorflow-1.11.0-cp35-none-linux_armv7l.whl tensorflow-1.11.0-cp36-none-linux_armv7l.whl
+mv tensorflow-1.11.0-cp34-none-linux_armv7l.whl tensorflow-1.11.0-cp36-none-linux_armv7l.whl
 ```
 Install Tensorflow
 ```
 sudo python3 -m pip install tensorflow-1.11.0-cp36-none-linux_armv7l.whl
 ```
+In case of ```numpy.distutils.system_info.NotFoundError: No lapack/blas resources found.``` error. Install following packages.
+```
+sudo apt-get install libblas3 liblapack3 liblapack-dev libblas-dev
+sudo apt-get install gfortran
+```
+After install, we will get <b>warning</b> message when importing <b>tensorflow</b> but it OK.
+```
+
+```
+
+### OPTION 1: Install above whl using Python3.4
+Before we install Python3.4 on Odroid, let's uninstall Python3.6
+```
+sudo apt purge python3*
+```
+Install Python3.4
+```
+sudo apt install python34 python34-dev
+```
+Install Tensorflow
+```
+sudo python3.4 -m pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
+```
+We should not see any warning now.. 
+```
+
+```
+
+Enjoy Tensorfow on Odroid :)
