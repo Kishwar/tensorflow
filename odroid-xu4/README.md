@@ -228,7 +228,8 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ### Step 8: Tensorflow r1.11 (Python 3.6)
 Let's install some pre-requisites
 ```
-sudo apt-get install -y libhdf5-dev
+sudo apt-get install libhdf5-serial-dev
+sudo apt-get install libhdf5-dev
 sudo pip3 install keras_applications==1.0.6 --no-deps
 sudo pip3 install keras_preprocessing==1.0.5 --no-deps
 sudo pip3 install h5py==2.8.0
@@ -337,6 +338,16 @@ RECOMMENDATION: Use steps below for stable version.
 
 # Tensorflow on Odroid XU4 (Stable)
 ## SECTION STABLE
+Let's install some pre-requisites
+```
+sudo apt-get install libhdf5-serial-dev
+sudo apt-get install libhdf5-dev
+sudo pip3 install keras_applications==1.0.6 --no-deps
+sudo pip3 install keras_preprocessing==1.0.5 --no-deps
+sudo pip3 install h5py==2.8.0
+sudo apt-get install -y openmpi-bin libopenmpi-dev
+sudo apt install git
+```
 Download tensorflow from official <b>piwheels</b> website
 ```
 wget https://www.piwheels.org/simple/tensorflow/tensorflow-1.11.0-cp34-none-linux_armv7l.whl
