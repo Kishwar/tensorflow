@@ -1,7 +1,7 @@
 
-# Tensorflow on Odroid XU4 (Unastable)
-## For Stable version, see below.
+# Tensorflow on Odroid XU4 (Unastable, See SECTION UNSTABLE)
 
+## SECTION UNSTABLE
 ### To build Tensorflow on Odroid XU4, we will need following hardware.
 
 - Odroid XU4 board
@@ -336,6 +336,7 @@ see https://github.com/tensorflow/tensorflow/issues/15062
 RECOMMENDATION: Use steps below for stable version.
 
 # Tensorflow on Odroid XU4 (Stable)
+## SECTION STABLE
 Download tensorflow from official <b>piwheels</b> website
 ```
 wget https://www.piwheels.org/simple/tensorflow/tensorflow-1.11.0-cp34-none-linux_armv7l.whl
