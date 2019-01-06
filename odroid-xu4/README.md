@@ -1,5 +1,6 @@
 
 # Tensorflow on Odroid XU4 (Unastable)
+## For Stable version, see below.
 
 ### To build Tensorflow on Odroid XU4, we will need following hardware.
 
