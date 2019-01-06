@@ -371,9 +371,26 @@ Before we install Python3.4 on Odroid, let's uninstall Python3.6
 ```
 sudo apt purge python3*
 ```
-Install Python3.4
+Install Python3.4:
+ - Download sources from https://www.python.org/ftp/python/3.4.4/Python-3.4.4.tar.xz
+ - Unzip file
+``` 
+cd Python3.4.4
+sudo ./configure --enable-optimizations
+# command below will take long time..
+sudo make altinstall
 ```
-sudo apt install python34 python34-dev
+```
+odroid@odroid:~/Downloads/Python-3.4.4$ python3.4
+Python 3.4.4 (default, Jan  6 2019, 12:04:56) 
+[GCC 7.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+```
+Get pip
+```
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+sudo python get-pip.py
+```
 ```
 Install Tensorflow
 ```
