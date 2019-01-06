@@ -329,3 +329,26 @@ Install it
 sudo pip3 install /tmp/tensorflow_pkg/tensorflow-1.11.0-cp36-cp36m-linux_armv7l.whl
 ```
 
+WARNING: With above steps, Tensorflow works fine with Keras but gives ```BUS ERROR``` when used directly. Possible reason for error is memory mis-alignment.
+
+RECOMMENDATION: Use steps below for stable version.
+
+# Tensorflow on Odroid XU4 (Stable)
+Download tensorflow from official <b>piwheels</b> website
+```
+wget https://www.piwheels.org/simple/tensorflow/tensorflow-1.11.0-cp35-none-linux_armv7l.whl
+```
+This package is compiled using Python3.5. If we try to install it for Python3.6, we will get following error:
+```
+```
+Now we have 2 options. Either we unistall Python3.6 and install Python3.5 or we force wheel file to be installed for Python3.6.
+
+### OPTION 1: Install above whl using Python3.6
+After download, rename file tensorflow-1.11.0-cp35-none-linux_armv7l.whl > tensorflow-1.11.0-cp36-none-linux_armv7l.whl
+```
+mv tensorflow-1.11.0-cp35-none-linux_armv7l.whl tensorflow-1.11.0-cp36-none-linux_armv7l.whl
+```
+Install Tensorflow
+```
+sudo python3 -m pip install tensorflow-1.11.0-cp36-none-linux_armv7l.whl
+```
