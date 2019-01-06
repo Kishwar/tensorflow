@@ -385,4 +385,4 @@ We should not see any warning now..
 
 ```
 
-Enjoy Tensorfow on Odroid :)
+Enjoy Tensorflow on Odroid :)
