@@ -348,7 +348,7 @@ The directory '/home/odroid/.cache/pip/http' or its parent directory is not owne
 The directory '/home/odroid/.cache/pip' or its parent directory is not owned by the current user and caching wheels has been disabled. check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
 tensorflow-1.11.0-cp34-none-linux_armv7l.whl is not a supported wheel on this platform.
 ```
-Now we have 2 options. Either we unistall Python3.6 and install Python3.4 or we force wheel file to be installed for Python3.6.
+Now we have 2 options. Either we force whl to be installed with Python3.6 or we install Python3.4
 
 ### OPTION 1: Install above whl using Python3.6
 After download, rename file tensorflow-1.11.0-cp34-none-linux_armv7l.whl > tensorflow-1.11.0-cp36-none-linux_armv7l.whl
