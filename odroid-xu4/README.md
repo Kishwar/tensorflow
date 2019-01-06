@@ -364,7 +364,7 @@ In case of ```numpy.distutils.system_info.NotFoundError: No lapack/blas resource
 sudo apt-get install libblas3 liblapack3 liblapack-dev libblas-dev
 sudo apt-get install gfortran
 ```
-After install, we will get <b>warning</b> message when importing <b>tensorflow</b> but it OK.
+After install, we will get <b>warning</b> message when importing <b>tensorflow</b> but it is OK.
 
 ### OPTION 2: Install above whl using Python3.4
 To get Python3.4, we will install Miniconda. Get Miniconda
