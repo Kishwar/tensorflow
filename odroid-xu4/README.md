@@ -367,34 +367,27 @@ sudo apt-get install gfortran
 After install, we will get <b>warning</b> message when importing <b>tensorflow</b> but it OK.
 
 ### OPTION 2: Install above whl using Python3.4
-Before we install Python3.4 on Odroid, let's uninstall Python3.6
+To get Python3.4, we will install Miniconda. Get Miniconda
 ```
-sudo apt purge python3*
+wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh
 ```
-Install Python3.4:
- - Download sources from https://www.python.org/ftp/python/3.4.4/Python-3.4.4.tar.xz
- - Unzip file
-``` 
-cd Python3.4.4
-sudo ./configure --enable-optimizations
-# command below will take long time..
-sudo make altinstall
+Install it
 ```
+sudo chmod +x Miniconda3-latest-Linux-armv7l.sh
+sudo ./Miniconda3-latest-Linux-armv7l.sh
+sudo reboot
 ```
-odroid@odroid:~/Downloads/Python-3.4.4$ python3.4
-Python 3.4.4 (default, Jan  6 2019, 12:04:56) 
-[GCC 7.3.0] on linux
-Type "help", "copyright", "credits" or "license" for more information.
+Create Virtual Enviroment
 ```
-Get pip
+conda create -n py34Env python=3.4
 ```
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-sudo python get-pip.py
+Activate it
 ```
+source activate py34Env
 ```
 Install Tensorflow
 ```
-sudo python3.4 -m pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
+(py34Env)odroid@odroid:~$ sudo pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
 ```
 We should not see any warning now.. 
 
