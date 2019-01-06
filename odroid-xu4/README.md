@@ -387,7 +387,7 @@ source activate py34Env
 ```
 Install Tensorflow
 ```
-(py34Env)odroid@odroid:~$ sudo pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
+(py34Env)odroid@odroid:~$ pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
 ```
 We should not see any warning now.. 
 
