@@ -403,5 +403,17 @@ Install Tensorflow
 (py34Env)odroid@odroid:~$ pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
 ```
 We should not see any warning now.. 
+```
+(py34Env)odroid@odroid:~/Desktop$ python
+Python 3.4.3 |Continuum Analytics, Inc.| (default, Aug 21 2015, 00:53:08) 
+[GCC 4.6.3] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import tensorflow as tf
+>>> hello = tf.constant('Hello, Tensorflow!')
+>>> sess = tf.Session()
+>>> sess.run(hello)
+b'Hello, Tensorflow!'
+>>> 
+```
 
 Enjoy Tensorflow on Odroid :)
