@@ -420,11 +420,37 @@ Enjoy Tensorflow on Odroid :)
 
 
 # Install OpenCV in Virtual Enviroment
+Install global dependences
 ```
+sudo apt-get -qq remove ffmpeg x264 libx264-dev
+sudo apt-get -qq install libopencv-dev build-essential checkinstall cmake pkg-config yasm libjpeg-dev libjasper-dev libavcodec-dev libavformat-dev libswscale-dev libdc1394-22-dev libxine2-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libv4l-dev python-dev python-numpy libtbb-dev libqt4-dev libgtk2.0-dev libmp3lame-dev libopencore-amrnb-dev libopencore-amrwb-dev libtheora-dev libvorbis-dev libxvidcore-dev x264 v4l-utils ffmpeg cmake qt5-default checkinstall
+```
+Install numpy in virtual enviroment
+```
+(py34Env)odroid@odroid:~$ python3.4 -m pip install numpy
+(py34Env)odroid@odroid:~$ python3.4 -m pip install -U numpy
+```
+Download OpenCV
+```
+version="3.4.3"
+mkdir OpenCV
+cd OpenCV
+wget -O OpenCV-$version.zip http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/$version/opencv-"$version".zip/download
+unzip OpenCV-$version.zip
+cd opencv-$version
+```
+Build OpenCV
+```
+mkdir build
+cd build
 cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local \
-      -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules -D ENABLE_NEON=ON \
-      -D ENABLE_VFPV3=ON -D BUILD_TESTS=OFF -D OPENCV_ENABLE_NONFREE=ON \
-      -D INSTALL_PYTHON_EXAMPLES=OFF -D BUILD_EXAMPLES=OFF \
+      -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON \
+      -D INSTALL_C_EXAMPLES=ON -D INSTALL_PYTHON_EXAMPLES=ON \
+      -D BUILD_EXAMPLES=ON -D WITH_QT=OFF -D WITH_OPENGL=ON \
       -D PYTHON3_LIBRARY=/home/odroid/.conda/envs/py34Env/lib/libpython3.4m.so \
       -D PYTHON3_INCLUDE_DIR=/home/odroid/.conda/envs/py34Env/include/python3.4m ..
 ```
+Make sure you see output as
+<p align = 'center'>
+<img src = 'images/OpenCVBuild.png' height = '320px'>
+</p>
