@@ -454,3 +454,17 @@ Make sure you see output as
 <p align = 'center'>
 <img src = 'images/OpenCVBuild.png' height = '320px'>
 </p>
+
+Let's build now
+```
+make -j$nproc
+```
+After build, install it.
+```
+sudo make install
+sudo ldconfig
+```
+Final step, Link operation
+```
+
+```
