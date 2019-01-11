@@ -457,7 +457,7 @@ Make sure you see output as
 
 Let's build now
 ```
-make -j$nproc
+make -j8
 ```
 After build, install it.
 ```
@@ -466,5 +466,25 @@ sudo ldconfig
 ```
 Final step, Link operation
 ```
+cd /usr/local/lib/python3.4/site-packages
+sudo mv cv2.cpython-34m.so cv2.so
 
+cd /home/odroid/.conda/envs/py34Env/lib/python3.4/site-packages
+ln -s /usr/local/lib/python3.4/site-packages/cv2.so cv2.so
+
+cd ~
 ```
+
+Let's check the instations
+```
+(py34Env)odroid@odroid:~$ python
+Python 3.4.3 |Continuum Analytics, Inc.| (default, Aug 21 2015, 00:53:08) 
+[GCC 4.6.3] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import cv2
+>>> cv2.__version__
+'3.4.3'
+>>> 
+```
+
+Enjoy OpenCV on Odroid :)
