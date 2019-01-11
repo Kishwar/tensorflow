@@ -377,6 +377,12 @@ In case of ```numpy.distutils.system_info.NotFoundError: No lapack/blas resource
 sudo apt-get install libblas3 liblapack3 liblapack-dev libblas-dev
 sudo apt-get install gfortran
 ```
+In case of ```api_compat.h:27:10: fatal error: hdf5.h: No such file or directory```
+```
+sudo apt-get install libhdf5-serial-dev
+sudo apt-get install libhdf5-dev
+export CPATH="/usr/include/hdf5/serial/"
+```
 After install, we will get <b>warning</b> message when importing <b>tensorflow</b> but it is OK.
 
 ### OPTION 2: Install above whl using Python3.4
@@ -401,6 +407,17 @@ source activate py34Env
 Install Tensorflow
 ```
 (py34Env)odroid@odroid:~$ pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
+```
+In case of ```numpy.distutils.system_info.NotFoundError: No lapack/blas resources found.``` error. Install following packages.
+```
+sudo apt-get install libblas3 liblapack3 liblapack-dev libblas-dev
+sudo apt-get install gfortran
+```
+In case of ```api_compat.h:27:10: fatal error: hdf5.h: No such file or directory```
+```
+sudo apt-get install libhdf5-serial-dev
+sudo apt-get install libhdf5-dev
+export CPATH="/usr/include/hdf5/serial/"
 ```
 We should not see any warning now.. 
 ```
