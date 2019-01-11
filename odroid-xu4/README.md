@@ -505,3 +505,14 @@ Type "help", "copyright", "credits" or "license" for more information.
 ```
 
 Enjoy OpenCV on Odroid :)
+
+Import Tensorflow after cv2 otherwise we get error ```ImportError: /home/odroid/.conda/envs/py34Env/lib/python3.4/lib-dynload/../../libz.so.1: version `ZLIB_1.2.9' not found (required by /usr/lib/arm-linux-gnueabihf/libpng16.so.16)```
+```
+(py34Env)odroid@odroid:~$ python
+Python 3.4.3 |Continuum Analytics, Inc.| (default, Aug 21 2015, 00:53:08) 
+[GCC 4.6.3] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import cv2
+>>> import tensorflow as tf
+>>> 
+```
