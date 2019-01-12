@@ -377,6 +377,12 @@ In case of ```numpy.distutils.system_info.NotFoundError: No lapack/blas resource
 sudo apt-get install libblas3 liblapack3 liblapack-dev libblas-dev
 sudo apt-get install gfortran
 ```
+In case of ```api_compat.h:27:10: fatal error: hdf5.h: No such file or directory```
+```
+sudo apt-get install libhdf5-serial-dev
+sudo apt-get install libhdf5-dev
+export CPATH="/usr/include/hdf5/serial/"
+```
 After install, we will get <b>warning</b> message when importing <b>tensorflow</b> but it is OK.
 
 ### OPTION 2: Install above whl using Python3.4
@@ -401,6 +407,17 @@ source activate py34Env
 Install Tensorflow
 ```
 (py34Env)odroid@odroid:~$ pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
+```
+In case of ```numpy.distutils.system_info.NotFoundError: No lapack/blas resources found.``` error. Install following packages.
+```
+sudo apt-get install libblas3 liblapack3 liblapack-dev libblas-dev
+sudo apt-get install gfortran
+```
+In case of ```api_compat.h:27:10: fatal error: hdf5.h: No such file or directory```
+```
+sudo apt-get install libhdf5-serial-dev
+sudo apt-get install libhdf5-dev
+export CPATH="/usr/include/hdf5/serial/"
 ```
 We should not see any warning now.. 
 ```
@@ -454,3 +471,48 @@ Make sure you see output as
 <p align = 'center'>
 <img src = 'images/OpenCVBuild.png' height = '320px'>
 </p>
+
+Let's build now
+```
+make -j8
+```
+After build, install it.
+```
+sudo make install
+sudo ldconfig
+```
+Final step, Link operation
+```
+cd /usr/local/lib/python3.4/site-packages
+sudo mv cv2.cpython-34m.so cv2.so
+
+cd /home/odroid/.conda/envs/py34Env/lib/python3.4/site-packages
+ln -s /usr/local/lib/python3.4/site-packages/cv2.so cv2.so
+
+cd ~
+```
+
+Let's check the instations
+```
+(py34Env)odroid@odroid:~$ python
+Python 3.4.3 |Continuum Analytics, Inc.| (default, Aug 21 2015, 00:53:08) 
+[GCC 4.6.3] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import cv2
+>>> cv2.__version__
+'3.4.3'
+>>> 
+```
+
+Enjoy OpenCV on Odroid :)
+
+Import Tensorflow after cv2 otherwise we get error ```ImportError: /home/odroid/.conda/envs/py34Env/lib/python3.4/lib-dynload/../../libz.so.1: version `ZLIB_1.2.9' not found (required by /usr/lib/arm-linux-gnueabihf/libpng16.so.16)```
+```
+(py34Env)odroid@odroid:~$ python
+Python 3.4.3 |Continuum Analytics, Inc.| (default, Aug 21 2015, 00:53:08) 
+[GCC 4.6.3] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import cv2
+>>> import tensorflow as tf
+>>> 
+```
