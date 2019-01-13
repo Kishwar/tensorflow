@@ -36,7 +36,7 @@ if [[ "$1" == "2" ]]; then
   source activate py34Env
   
   # Deactivate enviroment
-  source deactivate
+  # Automatically deactivates
 fi
 
 if [[ "$1" == "3" ]]; then
@@ -59,7 +59,7 @@ if [[ "$1" == "3" ]]; then
   python3.4 -m pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
   
   # Deactivate enviroment
-  source deactivate
+  # Automatically deactivates
 fi
 
 if [[ "$1" == "4" ]]; then
@@ -102,7 +102,7 @@ if [[ "$1" == "4" ]]; then
   cd ~
   
   # Deactivate enviroment
-  source deactivate
+  # Automatically deactivates
 fi
 
 echo 'Job finished.'
