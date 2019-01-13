@@ -243,8 +243,8 @@ class BatchGenerator(Sequence):
             # increase instance counter in current batch
             instance_count += 1  
 
-        #print(' new batch created', idx)
-
+        # print('new batch created', idx)
+        # print('batch shape', x_batch.shape, b_batch.shape, y_batch.shape)
         return [x_batch, b_batch], y_batch
 
     def on_epoch_end(self):
