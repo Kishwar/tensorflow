@@ -25,8 +25,7 @@ if [[ "$1" == "1" ]]; then
   wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh
   sudo chmod +x Miniconda3-latest-Linux-armv7l.sh
   sudo ./Miniconda3-latest-Linux-armv7l.sh
-  sudo reboot
-  exit 0
+  echo "Please reboot system using 'sudo reboot'"
 fi
 
 if [[ "$1" == "2" ]]; then
