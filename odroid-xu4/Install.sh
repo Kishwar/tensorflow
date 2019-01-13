@@ -36,7 +36,7 @@ if [[ "$1" == "2" ]]; then
   source activate py34Env
   
   # Deactivate enviroment
-  # Automatically deactivates
+  source deactivate
 fi
 
 if [[ "$1" == "3" ]]; then
@@ -54,18 +54,22 @@ if [[ "$1" == "3" ]]; then
   
   # Update pip
   python3.4 -m pip install --upgrade pip
+  
+  # Update numpy
+  python3.4 -m pip install numpy
+  python3.4 -m pip install -U numpy
 
   # Install local dependencies
   export CPATH="/usr/include/hdf5/serial/"
   python3.4 -m pip install keras_applications==1.0.6 --no-deps
   python3.4 -m pip install keras_preprocessing==1.0.5 --no-deps
-  python3.4 -m pip install h5py==2.8.0
+  python3.4 -m pip install h5py
 
   # Install tensorflow
   python3.4 -m pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
   
   # Deactivate enviroment
-  # Automatically deactivates
+  source deactivate
 fi
 
 if [[ "$1" == "4" ]]; then
@@ -73,9 +77,6 @@ if [[ "$1" == "4" ]]; then
   # Activate enviroment
   source activate py34Env
   
-  python3.4 -m pip install numpy
-  python3.4 -m pip install -U numpy
-
   # Download Opencv
   version="3.4.3"
   mkdir OpenCV
@@ -108,7 +109,7 @@ if [[ "$1" == "4" ]]; then
   cd ~
   
   # Deactivate enviroment
-  # Automatically deactivates
+  source deactivate
 fi
 
 echo 'Job finished.'
