@@ -41,6 +41,9 @@ python -m pip install h5py==2.8.0
 # Install tensorflow
 pyton -m pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
 
+python3.4 -m pip install numpy
+python3.4 -m pip install -U numpy
+
 # Download Opencv
 version="3.4.3"
 mkdir OpenCV
