@@ -42,12 +42,12 @@ if [[ "$1" == "3" ]]; then
 
   # Install local dependencies
   export CPATH="/usr/include/hdf5/serial/"
-  python -m pip install keras_applications==1.0.6 --no-deps
-  python -m pip install keras_preprocessing==1.0.5 --no-deps
-  python -m pip install h5py==2.8.0
+  python3.4 -m pip install keras_applications==1.0.6 --no-deps
+  python3.4 -m pip install keras_preprocessing==1.0.5 --no-deps
+  python3.4 -m pip install h5py==2.8.0
 
   # Install tensorflow
-  pyton -m pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
+  python3.4 -m pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
 fi
 
 if [[ "$1" == "4" ]]; then
