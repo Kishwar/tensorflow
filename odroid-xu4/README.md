@@ -522,17 +522,17 @@ Type "help", "copyright", "credits" or "license" for more information.
 odroid@odroid:~/tensorflow$ sudo chmod +x Install.sh
 ```
 ```
-odroid@odroid:~/tensorflow$ ./Install.sh 1<br>
+odroid@odroid:~/tensorflow$ ./Install.sh 1
 ```
 Reboot system ```sudo reboot```
 ```
-odroid@odroid:~/tensorflow$ ./Install.sh 2<br>
+odroid@odroid:~/tensorflow$ ./Install.sh 2
 ```
 ```
-odroid@odroid:~/tensorflow$ ./Install.sh 3<br>
+odroid@odroid:~/tensorflow$ ./Install.sh 3
 ```
 ```
-odroid@odroid:~/tensorflow$ ./Install.sh 4<br>
+odroid@odroid:~/tensorflow$ ./Install.sh 4
 ```
 Import Tensorflow after cv2 otherwise we get error ```ImportError: /home/odroid/.conda/envs/py34Env/lib/python3.4/lib-dynload/../../libz.so.1: version `ZLIB_1.2.9' not found (required by /usr/lib/arm-linux-gnueabihf/libpng16.so.16)```
 ```
