@@ -40,6 +40,9 @@ if [[ "$1" == "2" ]]; then
 fi
 
 if [[ "$1" == "3" ]]; then
+
+  sudo rm tensorflow-1.11.0-cp3*
+  
   # Download tensorflow
   wget https://www.piwheels.org/simple/tensorflow/tensorflow-1.11.0-cp34-none-linux_armv7l.whl
   
