@@ -32,13 +32,19 @@ if [[ "$1" == "2" ]]; then
   # Create conda enviroment
   conda create -n py34Env python=3.4
 
-  # Activate and install tensorflow + OpenCV
+  # Activate enviroment
   source activate py34Env
+  
+  # Deactivate enviroment
+  source deactivate
 fi
 
 if [[ "$1" == "3" ]]; then
   # Download tensorflow
   wget https://www.piwheels.org/simple/tensorflow/tensorflow-1.11.0-cp34-none-linux_armv7l.whl
+  
+  # Activate enviroment
+  source activate py34Env
 
   # Install local dependencies
   export CPATH="/usr/include/hdf5/serial/"
@@ -48,9 +54,16 @@ if [[ "$1" == "3" ]]; then
 
   # Install tensorflow
   python3.4 -m pip install tensorflow-1.11.0-cp34-none-linux_armv7l.whl
+  
+  # Deactivate enviroment
+  source deactivate
 fi
 
 if [[ "$1" == "4" ]]; then
+
+  # Activate enviroment
+  source activate py34Env
+  
   python3.4 -m pip install numpy
   python3.4 -m pip install -U numpy
 
@@ -85,7 +98,8 @@ if [[ "$1" == "4" ]]; then
 
   cd ~
   
-  source deactive
+  # Deactivate enviroment
+  source deactivate
 fi
 
 echo 'Job finished.'
