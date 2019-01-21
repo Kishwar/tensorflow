@@ -5,6 +5,7 @@ import random
 from keras import backend as K
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
+import cv2
 
 def read_classes(classes_path):
     with open(classes_path) as f:
