@@ -17,6 +17,7 @@ if [[ "$1" == "1" ]]; then
   sudo apt-get -qq install libmp3lame-dev libopencore-amrnb-dev libopencore-amrwb-dev 
   sudo apt-get -qq install libtheora-dev libvorbis-dev libxvidcore-dev x264 v4l-utils 
   sudo apt-get -qq install ffmpeg cmake qt5-default checkinstall
+  sudo apt-get install libopencv-dev python-opencv
 
   # Update enviroment path
   export CPATH="/usr/include/hdf5/serial/"
